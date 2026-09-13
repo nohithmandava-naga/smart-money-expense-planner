@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Add New Expense</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Add New Expense</h1>
+
+
+        <form method="POST">
+
+
+            <!-- Date -->
+
+            <label>Date:</label>
+
+            <input
+                type="date"
+                name="date"
+                required
+            >
+
+            <br><br>
+
+
+            <!-- Category -->
+
+            <label>Category:</label>
+
+            <select name="category" required>
+
+                <option value="">
+                    Select Category
+                </option>
+
+                <option value="Food">
+                    Food
+                </option>
+
+                <option value="Travel">
+                    Travel
+                </option>
+
+                <option value="Shopping">
+                    Shopping
+                </option>
+
+                <option value="Bills">
+                    Bills
+                </option>
+
+                <option value="Health">
+                    Health
+                </option>
+
+                <option value="Entertainment">
+                    Entertainment
+                </option>
+
+            </select>
+
+            <br><br>
+
+
+            <!-- Amount -->
+
+            <label>Amount:</label>
+
+            <input
+                type="number"
+                name="amount"
+                min="1"
+                step="0.01"
+                placeholder="Enter amount"
+                required
+            >
+
+            <br><br>
+
+
+            <!-- Payment Mode -->
+
+            <label>Payment Mode:</label>
+
+            <select name="payment_mode" required>
+
+                <option value="">
+                    Select Payment Mode
+                </option>
+
+                <option value="Cash">
+                    Cash
+                </option>
+
+                <option value="UPI">
+                    UPI
+                </option>
+
+                <option value="Card">
+                    Card
+                </option>
+
+            </select>
+
+            <br><br>
+
+
+            <!-- Description -->
+
+            <label>Description:</label>
+
+            <input
+                type="text"
+                name="description"
+                placeholder="Example: Lunch"
+                required
+            >
+
+            <br><br>
+
+
+            <!-- Submit -->
+
+            <button type="submit">
+                Add Expense
+            </button>
+
+        </form>
+
+
+        <br><br>
+
+
+        <!-- Back to Dashboard -->
+
+        <a href="/">
+
+            <button type="button">
+                Back to Dashboard
+            </button>
+
+        </a>
+
+    </div>
+
+</body>
+</html>

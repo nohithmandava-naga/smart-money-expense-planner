@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Prediction</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Expense Prediction</h1>
+
+        <form method="POST">
+
+            <label>Day:</label>
+            <input type="number" name="day" min="1" max="31" required>
+
+            <br><br>
+
+            <label>Month:</label>
+            <input type="number" name="month" min="1" max="12" required>
+
+            <br><br>
+
+            <label>Day of Week:</label>
+            <input type="number" name="day_of_week" min="0" max="6" required>
+
+            <br><br>
+
+            <label>Category:</label>
+
+<select name="category_code" required>
+
+    <option value="">Select Category</option>
+    <option value="0">Bills</option>
+    <option value="1">Entertainment</option>
+    <option value="2">Food</option>
+    <option value="3">Health</option>
+    <option value="4">Shopping</option>
+    <option value="5">Travel</option>
+
+</select>
+
+            <br><br>
+
+            <button type="submit">Predict Expense</button>
+
+        </form>
+
+        {% if prediction is not none %}
+
+            <h2>Predicted Expense</h2>
+
+            <p>₹ {{ "%.2f"|format(prediction) }}</p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="/">
+            <button type="button">Back to Dashboard</button>
+        </a>
+
+    </div>
+
+</body>
+</html>

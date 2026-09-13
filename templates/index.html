@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Money | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- =====================================================
+     SIDEBAR OVERLAY
+===================================================== -->
+
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside id="sideMenu" class="side-menu">
+
+    <div class="sidebar-brand">
+
+        <div class="sidebar-logo">
+            💰
+        </div>
+
+        <div>
+            <h2>Smart Money</h2>
+            <p>Expense Manager</p>
+        </div>
+
+        <button class="close-menu"
+                type="button"
+                aria-label="Close menu">
+            ×
+        </button>
+
+    </div>
+
+
+    <nav class="sidebar-navigation">
+
+        <a href="{{ url_for('home') }}"
+           class="sidebar-link active">
+
+            <span class="sidebar-icon">⌂</span>
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <a href="{{ url_for('add_expense') }}"
+           class="sidebar-link">
+
+            <span class="sidebar-icon">＋</span>
+            <span>Add Expense</span>
+
+        </a>
+
+
+        <a href="{{ url_for('predict') }}"
+           class="sidebar-link">
+
+            <span class="sidebar-icon">✦</span>
+            <span>Predict Expense</span>
+
+        </a>
+
+
+        <a href="{{ url_for('budget') }}"
+           class="sidebar-link">
+
+            <span class="sidebar-icon">◎</span>
+            <span>Budget Planner</span>
+
+        </a>
+
+
+        <a href="{{ url_for('history') }}"
+           class="sidebar-link">
+
+            <span class="sidebar-icon">◷</span>
+            <span>Expense History</span>
+
+        </a>
+
+
+        <div class="sidebar-separator"></div>
+
+
+        <a href="#"
+           class="sidebar-link">
+
+            <span class="sidebar-icon">♙</span>
+            <span>My Profile</span>
+
+        </a>
+
+
+        <a href="#"
+           class="sidebar-link">
+
+            <span class="sidebar-icon">⚙</span>
+            <span>Settings</span>
+
+        </a>
+
+
+        <a href="{{ url_for('logout') }}"
+           class="sidebar-link logout-link">
+
+            <span class="sidebar-icon">↪</span>
+            <span>Logout</span>
+
+        </a>
+
+    </nav>
+
+
+    <div class="sidebar-bottom-card">
+
+        <div class="sidebar-bottom-icon">
+            ✨
+        </div>
+
+        <h3>
+            Better Spending
+        </h3>
+
+        <h3>
+            Brighter Future
+        </h3>
+
+        <p>
+            Track, predict and plan your expenses
+            for a smarter financial future.
+        </p>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main class="main-content">
+
+
+    <!-- =================================================
+         TOP NAVBAR
+    ================================================= -->
+
+    <header class="top-navbar">
+
+
+        <div class="navbar-left">
+
+            <button class="menu-button"
+                    type="button"
+                    aria-label="Open menu">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </button>
+
+
+            <div class="mobile-brand">
+
+                <div class="mobile-brand-icon">
+                    💰
+                </div>
+
+                <span>
+                    Smart Money
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="navbar-center">
+
+            <div class="search-box">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+                <input type="text"
+                       placeholder="Search expenses, categories...">
+
+            </div>
+
+        </div>
+
+
+        <div class="navbar-right">
+
+            <button class="notification-button"
+                    type="button">
+
+                ♧
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <div class="navbar-user">
+
+                <div class="navbar-avatar">
+
+                    {{ username[0]|upper }}
+
+                </div>
+
+                <div class="navbar-user-info">
+
+                    <span>
+                        Welcome
+                    </span>
+
+                    <strong>
+                        {{ username }}
+                    </strong>
+
+                </div>
+
+                <span class="user-arrow">
+                    ▾
+                </span>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================================
+         PAGE WRAPPER
+    ================================================= -->
+
+    <div class="dashboard-wrapper">
+
+
+        <!-- =================================================
+             WELCOME BANNER
+        ================================================= -->
+
+        <section class="welcome-banner">
+
+            <div class="welcome-content">
+
+                <span class="welcome-label">
+                    PERSONAL FINANCE DASHBOARD
+                </span>
+
+                <h1>
+                    Good Morning, {{ username }} 👋
+                </h1>
+
+                <p>
+                    Track your spending, manage your budget,
+                    and make smarter financial decisions.
+                </p>
+
+
+                <div class="welcome-actions">
+
+                    <a href="{{ url_for('add_expense') }}"
+                       class="banner-button">
+
+                        <span>＋</span>
+                        Add Expense
+
+                    </a>
+
+
+                    <a href="{{ url_for('predict') }}"
+                       class="banner-button secondary">
+
+                        ✦
+                        Predict Expense
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="welcome-illustration">
+
+                <div class="illustration-circle circle-one"></div>
+
+                <div class="illustration-circle circle-two"></div>
+
+                <div class="phone-illustration">
+
+                    <div class="phone-top"></div>
+
+                    <div class="phone-screen">
+
+                        <div class="phone-chart">
+                            ↗
+                        </div>
+
+                        <div class="phone-line"></div>
+                        <div class="phone-line short"></div>
+                        <div class="phone-line"></div>
+
+                    </div>
+
+                </div>
+
+                <div class="floating-coin coin-one">
+                    ₹
+                </div>
+
+                <div class="floating-coin coin-two">
+                    $
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             OVERVIEW
+        ================================================= -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-title-row">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        OVERVIEW
+                    </span>
+
+                    <h2>
+                        Your Financial Snapshot
+                    </h2>
+
+                </div>
+
+
+                <span class="period-label">
+                    Current Records
+                </span>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+
+                <!-- TOTAL -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon green">
+                            ₹
+                        </div>
+
+                        <span class="stat-trend positive">
+                            ↑ Spending
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Total Expense
+                    </p>
+
+                    <h3>
+                        ₹{{ "%.2f"|format(total_expense) }}
+                    </h3>
+
+                    <span class="stat-description">
+                        Overall spending
+                    </span>
+
+                    <div class="mini-chart green-chart">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                </div>
+
+
+
+                <!-- AVERAGE -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon purple">
+                            ◫
+                        </div>
+
+                        <span class="stat-trend positive">
+                            ↑ Average
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Average Expense
+                    </p>
+
+                    <h3>
+                        ₹{{ "%.2f"|format(average_expense) }}
+                    </h3>
+
+                    <span class="stat-description">
+                        Average per transaction
+                    </span>
+
+                    <div class="mini-chart purple-chart">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                </div>
+
+
+
+                <!-- HIGHEST -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon pink">
+                            ★
+                        </div>
+
+                        <span class="stat-trend neutral">
+                            Highest
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Highest Expense
+                    </p>
+
+                    <h3>
+                        ₹{{ "%.2f"|format(highest_expense) }}
+                    </h3>
+
+                    <span class="stat-description">
+                        Largest transaction
+                    </span>
+
+                    <div class="mini-chart pink-chart">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                </div>
+
+
+
+                <!-- TRANSACTIONS -->
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon blue">
+                            #
+                        </div>
+
+                        <span class="stat-trend positive">
+                            ↑ Records
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Total Entries
+                    </p>
+
+                    <h3>
+                        {{ transaction_count }}
+                    </h3>
+
+                    <span class="stat-description">
+                        Recorded transactions
+                    </span>
+
+                    <div class="mini-chart blue-chart">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ANALYTICS
+        ================================================= -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-title-row">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        ANALYTICS
+                    </span>
+
+                    <h2>
+                        Spending Overview
+                    </h2>
+
+                </div>
+
+
+                <a href="{{ url_for('history') }}"
+                   class="view-link">
+
+                    View History →
+                    
+                </a>
+
+            </div>
+
+
+            <div class="analytics-grid">
+
+
+                <!-- SPENDING GRAPH -->
+
+                <div class="modern-panel spending-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-icon blue-icon">
+                                ↗
+                            </div>
+
+                            <div class="panel-title">
+
+                                <h3>
+                                    Spending Overview
+                                </h3>
+
+                                <p>
+                                    Your category spending distribution
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="panel-badge">
+                            All Time
+                        </span>
+
+                    </div>
+
+
+                    <div class="spending-visual">
+
+                        <div class="vertical-scale">
+
+                            <span>₹3K</span>
+                            <span>₹2K</span>
+                            <span>₹1K</span>
+                            <span>₹0</span>
+
+                        </div>
+
+
+                        <div class="bar-chart">
+
+                            {% if category_expenses %}
+
+                                {% for category, amount in category_expenses %}
+
+                                    <div class="bar-item">
+
+                                        <div class="bar-value">
+                                            ₹{{ "%.0f"|format(amount) }}
+                                        </div>
+
+                                        <div class="bar"
+                                             style="height: {{ [((amount / highest_expense) * 150), 20]|max }}px;">
+                                        </div>
+
+                                        <span>
+                                            {{ category[:4] }}
+                                        </span>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CATEGORY BREAKDOWN -->
+
+                <div class="modern-panel category-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-icon orange-icon">
+                                ◉
+                            </div>
+
+                            <div class="panel-title">
+
+                                <h3>
+                                    Expense Breakdown
+                                </h3>
+
+                                <p>
+                                    By category
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="category-breakdown">
+
+                        <div class="donut-chart">
+
+                            <div class="donut-inner">
+
+                                <strong>
+                                    ₹{{ "%.0f"|format(total_expense) }}
+                                </strong>
+
+                                <span>
+                                    Total Expense
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="category-legend">
+
+                            {% if category_expenses %}
+
+                                {% for category, amount in category_expenses %}
+
+                                    <div class="legend-item">
+
+                                        <span class="legend-left">
+
+                                            <span class="legend-dot
+                                                {% if loop.index == 1 %}dot-orange
+                                                {% elif loop.index == 2 %}dot-pink
+                                                {% elif loop.index == 3 %}dot-blue
+                                                {% elif loop.index == 4 %}dot-green
+                                                {% elif loop.index == 5 %}dot-purple
+                                                {% else %}dot-gray
+                                                {% endif %}">
+                                            </span>
+
+                                            {{ category }}
+
+                                        </span>
+
+                                        <strong>
+                                            ₹{{ "%.0f"|format(amount) }}
+                                        </strong>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             QUICK ACTIONS + PREDICTION
+        ================================================= -->
+
+        <section class="dashboard-section">
+
+
+            <div class="actions-prediction-grid">
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div class="modern-panel quick-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <div class="panel-icon blue-icon">
+                                ✦
+                            </div>
+
+                            <div class="panel-title">
+
+                                <h3>
+                                    Quick Actions
+                                </h3>
+
+                                <p>
+                                    Manage your expenses easily
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+
+                        <a href="{{ url_for('add_expense') }}"
+                           class="action-tile green-tile">
+
+                            <div class="action-icon">
+                                ＋
+                            </div>
+
+                            <h4>
+                                Add Expense
+                            </h4>
+
+                            <p>
+                                Record a new expense
+                            </p>
+
+                            <span class="action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a href="{{ url_for('predict') }}"
+                           class="action-tile purple-tile">
+
+                            <div class="action-icon">
+                                ✦
+                            </div>
+
+                            <h4>
+                                Predict Expense
+                            </h4>
+
+                            <p>
+                                Predict future spending
+                            </p>
+
+                            <span class="action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a href="{{ url_for('budget') }}"
+                           class="action-tile orange-tile">
+
+                            <div class="action-icon">
+                                ◎
+                            </div>
+
+                            <h4>
+                                Budget Planner
+                            </h4>
+
+                            <p>
+                                Manage your budgets
+                            </p>
+
+                            <span class="action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a href="{{ url_for('history') }}"
+                           class="action-tile blue-tile">
+
+                            <div class="action-icon">
+                                ▤
+                            </div>
+
+                            <h4>
+                                Expense History
+                            </h4>
+
+                            <p>
+                                View transactions
+                            </p>
+
+                            <span class="action-arrow">
+                                →
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- AI PREDICTION -->
+
+                <div class="ai-prediction-card">
+
+                    <div class="ai-glow"></div>
+
+                    <div class="ai-content">
+
+                        <div class="ai-label">
+                            ✦ AI POWERED
+                        </div>
+
+                        <h2>
+                            Expense Prediction
+                        </h2>
+
+                        <p>
+                            Use machine learning to estimate
+                            your future expenses and plan ahead.
+                        </p>
+
+
+                        <div class="ai-feature">
+
+                            <span>
+                                🤖
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Smart Prediction
+                                </strong>
+
+                                <small>
+                                    Based on your spending patterns
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <a href="{{ url_for('predict') }}"
+                           class="ai-button">
+
+                            View Prediction
+                            <span>→</span>
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="ai-decoration">
+
+                        <div class="ai-brain">
+                            ✦
+                        </div>
+
+                        <div class="ai-line line-1"></div>
+                        <div class="ai-line line-2"></div>
+                        <div class="ai-line line-3"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             BUDGET STATUS
+        ================================================= -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-title-row">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        BUDGET
+                    </span>
+
+                    <h2>
+                        Budget Status
+                    </h2>
+
+                </div>
+
+
+                <a href="{{ url_for('budget') }}"
+                   class="view-link">
+
+                    Manage Budget →
+
+                </a>
+
+            </div>
+
+
+            <div class="budget-grid">
+
+
+                {% set budgets = {
+                    "Food": 3000,
+                    "Travel": 2000,
+                    "Shopping": 3000,
+                    "Bills": 2500,
+                    "Health": 1500,
+                    "Entertainment": 2000
+                } %}
+
+
+                {% if category_expenses %}
+
+                    {% for category, amount in category_expenses %}
+
+                        {% set budget = budgets.get(category, 2000) %}
+                        {% set percentage = (amount / budget * 100) %}
+
+
+                        <div class="budget-card">
+
+                            <div class="budget-card-top">
+
+                                <div class="budget-category">
+
+                                    <div class="budget-category-icon">
+
+                                        {% if category == "Food" %}
+                                            🍔
+                                        {% elif category == "Travel" %}
+                                            ✈️
+                                        {% elif category == "Shopping" %}
+                                            🛍️
+                                        {% elif category == "Bills" %}
+                                            🧾
+                                        {% elif category == "Health" %}
+                                            ❤️
+                                        {% elif category == "Entertainment" %}
+                                            🎬
+                                        {% else %}
+                                            💰
+                                        {% endif %}
+
+                                    </div>
+
+                                    <div>
+
+                                        <h4>
+                                            {{ category }}
+                                        </h4>
+
+                                        <span>
+                                            Monthly budget
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if percentage >= 80 %}
+
+                                    <span class="budget-status warning">
+                                        Warning
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="budget-status good">
+                                        Good
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="budget-amount">
+
+                                <strong>
+                                    ₹{{ "%.0f"|format(amount) }}
+                                </strong>
+
+                                <span>
+                                    / ₹{{ "%.0f"|format(budget) }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="budget-progress">
+
+                                <div class="budget-progress-fill
+                                    {% if percentage >= 80 %}
+                                        warning-progress
+                                    {% else %}
+                                        good-progress
+                                    {% endif %}"
+                                    style="width: {{ [percentage, 100]|min }}%;">
+                                </div>
+
+                            </div>
+
+
+                            <div class="budget-footer">
+
+                                <span>
+                                    {{ "%.1f"|format(percentage) }}%
+                                </span>
+
+                                <span>
+
+                                    {% if percentage >= 80 %}
+                                        Near budget limit
+                                    {% else %}
+                                        Within budget
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PAYMENT SUMMARY
+        ================================================= -->
+
+        <section class="dashboard-section">
+
+
+            <div class="payment-panel modern-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <div class="panel-icon green-icon">
+                            💳
+                        </div>
+
+                        <div class="panel-title">
+
+                            <h3>
+                                Payment Summary
+                            </h3>
+
+                            <p>
+                                How you are paying for expenses
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="payment-grid">
+
+                    {% if payment_expenses %}
+
+                        {% for payment, amount in payment_expenses %}
+
+                            <div class="payment-card">
+
+                                <div class="payment-card-icon">
+                                    💳
+                                </div>
+
+                                <div class="payment-card-info">
+
+                                    <span>
+                                        {{ payment }}
+                                    </span>
+
+                                    <strong>
+                                        ₹{{ "%.2f"|format(amount) }}
+                                    </strong>
+
+                                </div>
+
+                                <div class="payment-percent">
+
+                                    {% if total_expense > 0 %}
+
+                                        {{ "%.1f"|format((amount / total_expense) * 100) }}%
+
+                                    {% else %}
+
+                                        0%
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HIGHLIGHTS
+        ================================================= -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-title-row">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        INSIGHTS
+                    </span>
+
+                    <h2>
+                        Financial Highlights
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="highlights-grid">
+
+
+                <div class="highlight-card">
+
+                    <div class="highlight-icon purple-highlight">
+                        ★
+                    </div>
+
+                    <div>
+
+                        <span>
+                            TOP SPENDING CATEGORY
+                        </span>
+
+                        {% if category_expenses %}
+
+                            <h3>
+                                {{ category_expenses[0][0] }}
+                            </h3>
+
+                        {% else %}
+
+                            <h3>
+                                No Data
+                            </h3>
+
+                        {% endif %}
+
+                        <p>
+                            Highest spending category
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="highlight-card">
+
+                    <div class="highlight-icon green-highlight">
+                        ₹
+                    </div>
+
+                    <div>
+
+                        <span>
+                            AVERAGE SPENDING
+                        </span>
+
+                        <h3>
+                            ₹{{ "%.2f"|format(average_expense) }}
+                        </h3>
+
+                        <p>
+                            Per transaction
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="highlight-card">
+
+                    <div class="highlight-icon orange-highlight">
+                        !
+                    </div>
+
+                    <div>
+
+                        <span>
+                            BUDGET STATUS
+                        </span>
+
+                        <h3>
+                            {% if category_expenses %}
+                                {% set warning_count = namespace(value=0) %}
+
+                                {% for category, amount in category_expenses %}
+
+                                    {% set budget = budgets.get(category, 2000) %}
+
+                                    {% if (amount / budget * 100) >= 80 %}
+                                        {% set warning_count.value = warning_count.value + 1 %}
+                                    {% endif %}
+
+                                {% endfor %}
+
+                                {% if warning_count.value > 0 %}
+                                    Attention
+                                {% else %}
+                                    Good
+                                {% endif %}
+
+                            {% else %}
+                                Good
+                            {% endif %}
+                        </h3>
+
+                        <p>
+                            Keep monitoring your budget
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="highlight-card">
+
+                    <div class="highlight-icon blue-highlight">
+                        #
+                    </div>
+
+                    <div>
+
+                        <span>
+                            TOTAL TRANSACTIONS
+                        </span>
+
+                        <h3>
+                            {{ transaction_count }}
+                        </h3>
+
+                        <p>
+                            Recorded expenses
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RECENT TRANSACTIONS
+        ================================================= -->
+
+        <section class="dashboard-section">
+
+
+            <div class="section-title-row">
+
+                <div>
+
+                    <span class="section-eyebrow">
+                        ACTIVITY
+                    </span>
+
+                    <h2>
+                        Recent Transactions
+                    </h2>
+
+                </div>
+
+
+                <a href="{{ url_for('history') }}"
+                   class="view-link">
+
+                    View All →
+
+                </a>
+
+            </div>
+
+
+            <div class="modern-panel transaction-panel">
+
+                {% if recent_expenses %}
+
+                    <div class="transaction-table-wrapper">
+
+                        <table class="modern-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        DATE
+                                    </th>
+
+                                    <th>
+                                        CATEGORY
+                                    </th>
+
+                                    <th>
+                                        AMOUNT
+                                    </th>
+
+                                    <th>
+                                        PAYMENT MODE
+                                    </th>
+
+                                    <th>
+                                        DESCRIPTION
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for expense in recent_expenses %}
+
+                                    <tr>
+
+                                        <td>
+
+                                            <span class="date-text">
+
+                                                {{ expense.Date }}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="transaction-category">
+
+                                                {% if expense.Category == "Food" %}
+                                                    🍔
+                                                {% elif expense.Category == "Travel" %}
+                                                    ✈️
+                                                {% elif expense.Category == "Shopping" %}
+                                                    🛍️
+                                                {% elif expense.Category == "Bills" %}
+                                                    🧾
+                                                {% elif expense.Category == "Health" %}
+                                                    ❤️
+                                                {% elif expense.Category == "Entertainment" %}
+                                                    🎬
+                                                {% else %}
+                                                    💰
+                                                {% endif %}
+
+                                                {{ expense.Category }}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <strong class="transaction-amount">
+
+                                                ₹{{ "%.2f"|format(expense.Amount) }}
+
+                                            </strong>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="payment-badge">
+
+                                                {{ expense.Payment_Mode }}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="description-text">
+
+                                                {{ expense.Description }}
+
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">
+                            🧾
+                        </div>
+
+                        <h3>
+                            No Transactions Yet
+                        </h3>
+
+                        <p>
+                            Add your first expense to start tracking
+                            your financial activity.
+                        </p>
+
+                        <a href="{{ url_for('add_expense') }}"
+                           class="primary-button">
+
+                            ＋ Add Expense
+
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SAVING MESSAGE
+        ================================================= -->
+
+        <section class="saving-banner">
+
+            <div class="saving-content">
+
+                <span class="saving-small">
+                    YOUR FINANCIAL JOURNEY
+                </span>
+
+                <h2>
+                    Small Steps.
+                    <span>Big Goals.</span>
+                </h2>
+
+                <p>
+                    Every expense you track brings you one step
+                    closer to better financial control.
+                </p>
+
+                <a href="{{ url_for('budget') }}"
+                   class="saving-button">
+
+                    Start Planning
+                    <span>→</span>
+
+                </a>
+
+            </div>
+
+
+            <div class="saving-decoration">
+
+                <div class="plant-pot">
+                    🌱
+                </div>
+
+                <div class="saving-coin coin-a">
+                    ₹
+                </div>
+
+                <div class="saving-coin coin-b">
+                    ₹
+                </div>
+
+                <div class="saving-coin coin-c">
+                    ₹
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================= -->
+
+        <footer class="dashboard-footer">
+
+            <div>
+
+                <strong>
+                    💰 Smart Money
+                </strong>
+
+                <span>
+                    Smart Expense Prediction & Budget Planner
+                </span>
+
+            </div>
+
+            <p>
+                Manage your money. Understand your spending.
+            </p>
+
+        </footer>
+
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="{{ url_for('static', filename='menu.js') }}"></script>
+
+</body>
+</html>

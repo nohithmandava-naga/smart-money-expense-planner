@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Expense History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Expense History</h1>
+
+        <table>
+
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Description</th>
+            </tr>
+
+            {% for expense in expenses %}
+
+            <tr>
+
+                <td>{{ expense["Date"] }}</td>
+
+                <td>{{ expense["Category"] }}</td>
+
+                <td>
+                    ₹ {{ "%.2f"|format(expense["Amount"]) }}
+                </td>
+
+                <td>{{ expense["Payment_Mode"] }}</td>
+
+                <td>{{ expense["Description"] }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <br><br>
+
+        <a href="/">
+            <button type="button">
+                Back to Dashboard
+            </button>
+        </a>
+
+    </div>
+
+</body>
+</html>

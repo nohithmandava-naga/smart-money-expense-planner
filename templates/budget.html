@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Budget Planner
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ================================================= -->
+    <!-- PAGE TITLE -->
+    <!-- ================================================= -->
+
+    <h1>
+        💰 Budget Planner
+    </h1>
+
+
+    <p style="text-align:center;">
+        Plan your spending and monitor your budget
+    </p>
+
+
+    <!-- ================================================= -->
+    <!-- BUDGET FORM -->
+    <!-- ================================================= -->
+
+    <h2>
+        Set Monthly Budget
+    </h2>
+
+
+    <form method="POST">
+
+
+        <label>
+            Food Budget:
+        </label>
+
+        <input
+            type="number"
+            name="food"
+            min="0"
+            value="{{ budgets['Food'] }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Travel Budget:
+        </label>
+
+        <input
+            type="number"
+            name="travel"
+            min="0"
+            value="{{ budgets['Travel'] }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Shopping Budget:
+        </label>
+
+        <input
+            type="number"
+            name="shopping"
+            min="0"
+            value="{{ budgets['Shopping'] }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Bills Budget:
+        </label>
+
+        <input
+            type="number"
+            name="bills"
+            min="0"
+            value="{{ budgets['Bills'] }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Health Budget:
+        </label>
+
+        <input
+            type="number"
+            name="health"
+            min="0"
+            value="{{ budgets['Health'] }}"
+            required
+        >
+
+        <br><br>
+
+
+        <label>
+            Entertainment Budget:
+        </label>
+
+        <input
+            type="number"
+            name="entertainment"
+            min="0"
+            value="{{ budgets['Entertainment'] }}"
+            required
+        >
+
+        <br><br>
+
+
+        <button type="submit">
+            Analyze Budget
+        </button>
+
+
+    </form>
+
+
+    <!-- ================================================= -->
+    <!-- BUDGET ALERTS -->
+    <!-- ================================================= -->
+
+    <h2>
+        🚨 Budget Alerts
+    </h2>
+
+
+    <div class="budget-alert-container">
+
+
+        {% for category, details in result.items() %}
+
+
+        <div class="budget-alert-card
+                    {{ details['alert_type'] }}">
+
+
+            <div class="budget-alert-header">
+
+
+                <h3>
+                    {{ category }}
+                </h3>
+
+
+                {% if details["alert_type"] == "danger" %}
+
+                    <span>
+                        🔴 Budget Exceeded
+                    </span>
+
+                {% elif details["alert_type"] == "warning" %}
+
+                    <span>
+                        🟠 Warning
+                    </span>
+
+                {% else %}
+
+                    <span>
+                        🟢 Within Budget
+                    </span>
+
+                {% endif %}
+
+
+            </div>
+
+
+            <!-- Amount Details -->
+
+            <div class="budget-details">
+
+
+                <p>
+                    Budget:
+                    <strong>
+                        ₹ {{ "%.2f"|format(details["budget"]) }}
+                    </strong>
+                </p>
+
+
+                <p>
+                    Actual Expense:
+                    <strong>
+                        ₹ {{ "%.2f"|format(details["actual"]) }}
+                    </strong>
+                </p>
+
+
+            </div>
+
+
+            <!-- Progress -->
+
+            <div class="budget-progress-background">
+
+
+                <div
+                    class="budget-progress-bar
+                    {{ details['alert_type'] }}"
+                    style="width:
+                    {{ [details['percentage'], 100]|min }}%;">
+                </div>
+
+
+            </div>
+
+
+            <p class="budget-percentage">
+
+                {{ "%.1f"|format(details["percentage"]) }}%
+                of budget used
+
+            </p>
+
+
+            <!-- Alert Message -->
+
+            <div class="budget-message">
+
+                {% if details["alert_type"] == "danger" %}
+
+                    🔴
+                    <strong>
+                        Budget Exceeded!
+                    </strong>
+
+                    <br>
+
+                    {{ details["message"] }}
+
+
+                {% elif details["alert_type"] == "warning" %}
+
+                    🟠
+                    <strong>
+                        Budget Warning!
+                    </strong>
+
+                    <br>
+
+                    {{ details["message"] }}
+
+
+                {% else %}
+
+                    🟢
+                    <strong>
+                        Good Job!
+                    </strong>
+
+                    <br>
+
+                    {{ details["message"] }}
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- BACK TO DASHBOARD -->
+    <!-- ================================================= -->
+
+    <br><br>
+
+
+    <a href="/">
+
+        <button type="button">
+            ← Back to Dashboard
+        </button>
+
+    </a>
+
+
+</div>
+
+
+</body>
+
+</html>
