@@ -2,1667 +2,3885 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Smart Money | Dashboard</title>
+    <title>SMART MONEY | Financial Dashboard</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #101828;
+            --navy-2: #172033;
+            --navy-3: #202b3f;
+
+            --purple: #635bff;
+            --purple-light: #eeecff;
+
+            --green: #16a34a;
+            --green-light: #e9f9ef;
+
+            --red: #dc2626;
+            --red-light: #fff0f0;
+
+            --orange: #f59e0b;
+            --orange-light: #fff7df;
+
+            --blue: #2563eb;
+            --blue-light: #eaf2ff;
+
+            --background: #f5f7fb;
+            --white: #ffffff;
+
+            --text: #182230;
+            --text-light: #667085;
+
+            --border: #e4e7ec;
+
+            --shadow:
+                0 4px 20px rgba(16, 24, 40, 0.05);
+        }
+
+
+        body {
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background: var(--background);
+
+            color: var(--text);
+
+            min-height: 100vh;
+        }
+
+
+        a {
+
+            text-decoration: none;
+
+            color: inherit;
+        }
+
+
+        button {
+
+            font-family: inherit;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .sidebar {
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+
+            width: 245px;
+            height: 100vh;
+
+            background: var(--navy);
+
+            color: white;
+
+            padding: 24px 16px;
+
+            z-index: 1000;
+
+            transition: 0.3s;
+
+            overflow-y: auto;
+        }
+
+
+        /* BRAND */
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                4px 10px 26px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            margin-bottom: 26px;
+        }
+
+
+        .brand-logo {
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #756eff,
+                    #5146e5
+                );
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 8px 20px
+                rgba(99,91,255,0.35);
+        }
+
+
+        .brand-name {
+
+            font-size: 17px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        .brand-subtitle {
+
+            font-size: 9px;
+
+            color: #98a2b3;
+
+            margin-top: 3px;
+
+            letter-spacing: 1.1px;
+        }
+
+
+        /* MENU LABEL */
+
+        .menu-label {
+
+            font-size: 10px;
+
+            color: #667085;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.1px;
+
+            margin:
+                0 12px 10px;
+        }
+
+
+        /* NAVIGATION */
+
+        .navigation {
+
+            list-style: none;
+        }
+
+
+        .navigation li {
+
+            margin-bottom: 5px;
+        }
+
+
+        .navigation a {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            padding:
+                12px 13px;
+
+            border-radius: 9px;
+
+            color: #b8c0cc;
+
+            font-size: 13px;
+
+            transition: 0.2s;
+        }
+
+
+        .navigation a:hover {
+
+            background:
+                rgba(255,255,255,0.06);
+
+            color: white;
+        }
+
+
+        .navigation a.active {
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #635bff,
+                    #544be5
+                );
+
+            color: white;
+
+            box-shadow:
+                0 7px 18px
+                rgba(99,91,255,0.25);
+        }
+
+
+        .nav-icon {
+
+            width: 21px;
+
+            text-align: center;
+
+            font-size: 16px;
+        }
+
+
+        .account-menu {
+
+            margin-top: 28px;
+
+            padding-top: 20px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,0.08);
+        }
+
+
+        .logout {
+
+            color: #fca5a5 !important;
+        }
+
+
+        .logout:hover {
+
+            background:
+                rgba(220,38,38,0.1)
+                !important;
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .main {
+
+            margin-left: 245px;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================================================
+           TOPBAR
+        ========================================================= */
+
+        .topbar {
+
+            height: 72px;
+
+            background:
+                rgba(255,255,255,0.95);
+
+            backdrop-filter:
+                blur(12px);
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 32px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 900;
+        }
+
+
+        .top-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .mobile-button {
+
+            display: none;
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 24px;
+
+            cursor: pointer;
+        }
+
+
+        .breadcrumb {
+
+            font-size: 13px;
+
+            color: var(--text-light);
+        }
+
+
+        .breadcrumb strong {
+
+            color: var(--text);
+
+            font-weight: 700;
+        }
+
+
+        .top-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+        }
+
+
+        /* SEARCH */
+
+        .search {
+
+            width: 210px;
+
+            height: 38px;
+
+            border:
+                1px solid var(--border);
+
+            background: #f8fafc;
+
+            border-radius: 9px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                0 11px;
+
+            color: #98a2b3;
+        }
+
+
+        .search input {
+
+            border: none;
+
+            outline: none;
+
+            background: transparent;
+
+            width: 100%;
+
+            font-size: 12px;
+        }
+
+
+        /* NOTIFICATION */
+
+        .notification {
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 9px;
+
+            border:
+                1px solid var(--border);
+
+            background: white;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            position: relative;
+
+            cursor: pointer;
+        }
+
+
+        .notification-dot {
+
+            position: absolute;
+
+            top: 7px;
+            right: 7px;
+
+            width: 6px;
+            height: 6px;
+
+            background: #ef4444;
+
+            border-radius: 50%;
+
+            border: 1px solid white;
+        }
+
+
+        /* PROFILE */
+
+        .profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+        }
+
+
+        .avatar {
+
+            width: 39px;
+            height: 39px;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #635bff,
+                    #7c3aed
+                );
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 14px;
+
+            font-weight: 800;
+        }
+
+
+        .profile-name {
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .profile-email {
+
+            font-size: 10px;
+
+            color: var(--text-light);
+
+            margin-top: 2px;
+        }
+
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .page {
+
+            padding: 30px;
+
+            max-width: 1550px;
+
+            margin: auto;
+        }
+
+
+        /* =========================================================
+           WELCOME
+        ========================================================= */
+
+        .welcome {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            margin-bottom: 25px;
+        }
+
+
+        .welcome h1 {
+
+            font-size: 26px;
+
+            letter-spacing: -0.5px;
+
+            margin-bottom: 6px;
+        }
+
+
+        .welcome p {
+
+            color: var(--text-light);
+
+            font-size: 13px;
+        }
+
+
+        .overview-tag {
+
+            background: white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 9px;
+
+            padding:
+                9px 13px;
+
+            color: var(--text-light);
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           MONEY CARDS
+        ========================================================= */
+
+        .money-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1.3fr 1fr 1fr 1fr;
+
+            gap: 16px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .money-card {
+
+            background: white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            box-shadow: var(--shadow);
+
+            transition: 0.2s;
+        }
+
+
+        .money-card:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 10px 28px
+                rgba(16,24,40,0.07);
+        }
+
+
+        .money-card.primary {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6259ef,
+                    #493fc7
+                );
+
+            color: white;
+
+            border: none;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .money-card.primary::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 150px;
+            height: 150px;
+
+            border:
+                30px solid
+                rgba(255,255,255,0.07);
+
+            border-radius: 50%;
+
+            right: -60px;
+
+            top: -60px;
+        }
+
+
+        .money-label {
+
+            font-size: 11px;
+
+            color: var(--text-light);
+
+            margin-bottom: 9px;
+        }
+
+
+        .primary .money-label {
+
+            color:
+                rgba(255,255,255,0.7);
+        }
+
+
+        .money-value {
+
+            font-size: 25px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.4px;
+        }
+
+
+        .money-small {
+
+            font-size: 10px;
+
+            color: #98a2b3;
+
+            margin-top: 8px;
+        }
+
+
+        .primary .money-small {
+
+            color:
+                rgba(255,255,255,0.65);
+        }
+
+
+        .money-icon {
+
+            width: 37px;
+            height: 37px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 13px;
+
+            font-size: 17px;
+        }
+
+
+        .icon-purple {
+
+            background: var(--purple-light);
+
+            color: var(--purple);
+        }
+
+
+        .icon-blue {
+
+            background: var(--blue-light);
+
+            color: var(--blue);
+        }
+
+
+        .icon-orange {
+
+            background: var(--orange-light);
+
+            color: var(--orange);
+        }
+
+
+        .icon-green {
+
+            background: var(--green-light);
+
+            color: var(--green);
+        }
+
+
+        /* =========================================================
+           GRID HEADERS
+        ========================================================= */
+
+        .section-title {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 13px;
+        }
+
+
+        .section-title h2 {
+
+            font-size: 15px;
+
+            font-weight: 750;
+        }
+
+
+        .section-title span {
+
+            font-size: 10px;
+
+            color: var(--text-light);
+        }
+
+
+        /* =========================================================
+           ANALYTICS
+        ========================================================= */
+
+        .analytics {
+
+            display: grid;
+
+            grid-template-columns:
+                1.55fr 1fr;
+
+            gap: 18px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .panel {
+
+            background: white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            box-shadow: var(--shadow);
+        }
+
+
+        .chart-box {
+
+            height: 285px;
+
+            position: relative;
+        }
+
+
+        /* =========================================================
+           CATEGORY BREAKDOWN
+        ========================================================= */
+
+        .category-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                175px 1fr;
+
+            align-items: center;
+
+            gap: 16px;
+        }
+
+
+        .donut {
+
+            height: 175px;
+
+            position: relative;
+        }
+
+
+        .category-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 13px;
+        }
+
+
+        .category-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+
+        .category-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 11px;
+        }
+
+
+        .category-dot {
+
+            width: 8px;
+            height: 8px;
+
+            background:
+                var(--purple);
+
+            border-radius: 50%;
+        }
+
+
+        .category-right {
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+
+        .category-percent {
+
+            color: #98a2b3;
+
+            font-weight: 400;
+
+            margin-left: 4px;
+        }
+
+
+        /* =========================================================
+           QUICK ACTIONS
+        ========================================================= */
+
+        .quick-section {
+
+            margin-bottom: 20px;
+        }
+
+
+        .quick-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 13px;
+        }
+
+
+        .quick {
+
+            background: white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 12px;
+
+            padding: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            transition: 0.2s;
+        }
+
+
+        .quick:hover {
+
+            border-color:
+                #c7c1ff;
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .quick-icon {
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 16px;
+        }
+
+
+        .quick h3 {
+
+            font-size: 11px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .quick p {
+
+            font-size: 9px;
+
+            color: var(--text-light);
+        }
+
+
+        /* =========================================================
+           LOWER SECTION
+        ========================================================= */
+
+        .lower-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1.25fr 0.85fr;
+
+            gap: 18px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================================
+           TRANSACTIONS
+        ========================================================= */
+
+        .transaction {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 13px 0;
+
+            border-bottom:
+                1px solid #f0f2f5;
+        }
+
+
+        .transaction:last-child {
+
+            border-bottom: none;
+        }
+
+
+        .transaction-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+        }
+
+
+        .transaction-icon {
+
+            width: 37px;
+            height: 37px;
+
+            border-radius: 10px;
+
+            background: #f4f5f7;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+        }
+
+
+        .transaction-name {
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            margin-bottom: 3px;
+        }
+
+
+        .transaction-meta {
+
+            font-size: 9px;
+
+            color: var(--text-light);
+        }
+
+
+        .transaction-amount {
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            color: var(--red);
+        }
+
+
+        /* =========================================================
+           AI INSIGHT
+        ========================================================= */
+
+        .ai-card {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #151c36,
+                    #25205c
+                );
+
+            color: white;
+
+            border: none;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .ai-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.08);
+
+            right: -60px;
+
+            bottom: -80px;
+        }
+
+
+        .ai-top {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            margin-bottom: 23px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .ai-icon {
+
+            width: 40px;
+            height: 40px;
+
+            border-radius: 11px;
+
+            background:
+                rgba(255,255,255,0.1);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+        }
+
+
+        .ai-title {
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        .ai-subtitle {
+
+            font-size: 9px;
+
+            color: #a8a9c4;
+
+            margin-top: 3px;
+        }
+
+
+        .ai-label {
+
+            font-size: 9px;
+
+            color: #a8a9c4;
+
+            margin-bottom: 5px;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .ai-value {
+
+            font-size: 29px;
+
+            font-weight: 800;
+
+            position: relative;
+
+            z-index: 2;
+
+            margin-bottom: 18px;
+        }
+
+
+        .ai-message {
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border-radius: 9px;
+
+            padding: 11px;
+
+            font-size: 10px;
+
+            line-height: 1.6;
+
+            color: #d4d5e1;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        /* =========================================================
+           BUDGET
+        ========================================================= */
+
+        .budget-panel {
+
+            margin-bottom: 20px;
+        }
+
+
+        .budget-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 17px;
+        }
+
+
+        .budget-status {
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+        }
+
+
+        .good {
+
+            background:
+                var(--green-light);
+
+            color:
+                var(--green);
+        }
+
+
+        .warning {
+
+            background:
+                var(--orange-light);
+
+            color:
+                #b45309;
+        }
+
+
+        .danger {
+
+            background:
+                var(--red-light);
+
+            color:
+                var(--red);
+        }
+
+
+        .budget-values {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 11px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .progress {
+
+            width: 100%;
+
+            height: 9px;
+
+            background: #edf0f4;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+
+        .progress-bar {
+
+            height: 100%;
+
+            width: 75%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #635bff,
+                    #8b5cf6
+                );
+
+            border-radius: 20px;
+        }
+
+
+        .budget-description {
+
+            color: var(--text-light);
+
+            font-size: 9px;
+
+            margin-top: 8px;
+        }
+
+
+        /* =========================================================
+           PAYMENT CARDS
+        ========================================================= */
+
+        .payment-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-top: 15px;
+        }
+
+
+        .payment-item {
+
+            padding: 12px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 10px;
+
+            background: #fafbfc;
+        }
+
+
+        .payment-name {
+
+            font-size: 9px;
+
+            color: var(--text-light);
+
+            margin-bottom: 5px;
+        }
+
+
+        .payment-value {
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .footer {
+
+            text-align: center;
+
+            padding: 10px 0 20px;
+
+            color: #98a2b3;
+
+            font-size: 9px;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1200px) {
+
+            .money-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .quick-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 1000px) {
+
+            .sidebar {
+
+                transform:
+                    translateX(-100%);
+            }
+
+
+            .sidebar.open {
+
+                transform:
+                    translateX(0);
+            }
+
+
+            .main {
+
+                margin-left: 0;
+            }
+
+
+            .mobile-button {
+
+                display: block;
+            }
+
+
+            .search {
+
+                display: none;
+            }
+
+
+            .analytics {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .lower-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .topbar {
+
+                padding:
+                    0 17px;
+            }
+
+
+            .page {
+
+                padding: 18px;
+            }
+
+
+            .welcome {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 12px;
+            }
+
+
+            .welcome h1 {
+
+                font-size: 22px;
+            }
+
+
+            .money-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .quick-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .category-layout {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .donut {
+
+                width: 180px;
+
+                margin: auto;
+            }
+
+
+            .payment-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .profile-email {
+
+                display: none;
+            }
+
+        }
+
+
+        /* =========================================================
+           SMART MONEY - SMART ALERT CENTER
+           NEW STYLES ONLY - EXISTING DASHBOARD STYLES UNCHANGED
+        ========================================================= */
+
+        .sm-alert-center {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .sm-alert-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .sm-alert-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sm-alert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            background: var(--orange-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .sm-alert-title h2 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 750;
+        }
+
+        .sm-alert-title p {
+            margin: 4px 0 0;
+            color: var(--text-light);
+            font-size: 10px;
+        }
+
+        .sm-alert-count {
+            background: #f3f4f6;
+            color: var(--text);
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .sm-alert-item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 14px 9px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .sm-alert-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .sm-alert-status {
+            width: 30px;
+            text-align: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .sm-alert-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sm-alert-content h3 {
+            margin: 0 0 4px;
+            font-size: 11px;
+            font-weight: 750;
+        }
+
+        .sm-alert-content p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .sm-alert-percent {
+            min-width: 55px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .sm-alert-percent span {
+            display: block;
+            margin-top: 2px;
+            color: #98a2b3;
+            font-size: 8px;
+            font-weight: 400;
+        }
+
+        .sm-alert-item-danger {
+            background: #fffafa;
+            border-radius: 9px;
+        }
+
+        .sm-alert-item-warning {
+            background: #fffdf5;
+            border-radius: 9px;
+        }
+
+        .sm-alert-item-success {
+            background: #f8fff9;
+            border-radius: 9px;
+        }
+
+        .sm-alert-empty {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 17px 0;
+        }
+
+        .sm-alert-empty-icon {
+            font-size: 24px;
+        }
+
+        .sm-alert-empty h3 {
+            margin: 0 0 4px;
+            font-size: 11px;
+        }
+
+        .sm-alert-empty p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 9px;
+        }
+
+        .sm-alert-footer {
+            text-align: right;
+            margin-top: 14px;
+        }
+
+        .sm-alert-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 14px;
+            border-radius: 9px;
+            background: var(--navy);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .sm-alert-button:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+
+        @media (max-width: 650px) {
+            .sm-alert-center {
+                padding: 16px;
+            }
+
+            .sm-alert-item {
+                align-items: flex-start;
+            }
+
+            .sm-alert-percent {
+                min-width: 45px;
+                font-size: 11px;
+            }
+
+            .sm-alert-title h2 {
+                font-size: 13px;
+            }
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-<!-- =====================================================
-     SIDEBAR OVERLAY
-===================================================== -->
 
-<div id="sidebarOverlay" class="sidebar-overlay"></div>
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
 
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
 
-<!-- =====================================================
-     SIDEBAR
-===================================================== -->
 
-<aside id="sideMenu" class="side-menu">
+        <!-- BRAND -->
 
-    <div class="sidebar-brand">
+        <div class="brand">
 
-        <div class="sidebar-logo">
-            💰
-        </div>
+            <div class="brand-logo">
+                ₹
+            </div>
 
-        <div>
-            <h2>Smart Money</h2>
-            <p>Expense Manager</p>
-        </div>
+            <div>
 
-        <button class="close-menu"
-                type="button"
-                aria-label="Close menu">
-            ×
-        </button>
-
-    </div>
-
-
-    <nav class="sidebar-navigation">
-
-        <a href="{{ url_for('home') }}"
-           class="sidebar-link active">
-
-            <span class="sidebar-icon">⌂</span>
-            <span>Dashboard</span>
-
-        </a>
-
-
-        <a href="{{ url_for('add_expense') }}"
-           class="sidebar-link">
-
-            <span class="sidebar-icon">＋</span>
-            <span>Add Expense</span>
-
-        </a>
-
-
-        <a href="{{ url_for('predict') }}"
-           class="sidebar-link">
-
-            <span class="sidebar-icon">✦</span>
-            <span>Predict Expense</span>
-
-        </a>
-
-
-        <a href="{{ url_for('budget') }}"
-           class="sidebar-link">
-
-            <span class="sidebar-icon">◎</span>
-            <span>Budget Planner</span>
-
-        </a>
-
-
-        <a href="{{ url_for('history') }}"
-           class="sidebar-link">
-
-            <span class="sidebar-icon">◷</span>
-            <span>Expense History</span>
-
-        </a>
-
-
-        <div class="sidebar-separator"></div>
-
-
-        <a href="#"
-           class="sidebar-link">
-
-            <span class="sidebar-icon">♙</span>
-            <span>My Profile</span>
-
-        </a>
-
-
-        <a href="#"
-           class="sidebar-link">
-
-            <span class="sidebar-icon">⚙</span>
-            <span>Settings</span>
-
-        </a>
-
-
-        <a href="{{ url_for('logout') }}"
-           class="sidebar-link logout-link">
-
-            <span class="sidebar-icon">↪</span>
-            <span>Logout</span>
-
-        </a>
-
-    </nav>
-
-
-    <div class="sidebar-bottom-card">
-
-        <div class="sidebar-bottom-icon">
-            ✨
-        </div>
-
-        <h3>
-            Better Spending
-        </h3>
-
-        <h3>
-            Brighter Future
-        </h3>
-
-        <p>
-            Track, predict and plan your expenses
-            for a smarter financial future.
-        </p>
-
-    </div>
-
-</aside>
-
-
-
-<!-- =====================================================
-     MAIN CONTENT
-===================================================== -->
-
-<main class="main-content">
-
-
-    <!-- =================================================
-         TOP NAVBAR
-    ================================================= -->
-
-    <header class="top-navbar">
-
-
-        <div class="navbar-left">
-
-            <button class="menu-button"
-                    type="button"
-                    aria-label="Open menu">
-
-                <span></span>
-                <span></span>
-                <span></span>
-
-            </button>
-
-
-            <div class="mobile-brand">
-
-                <div class="mobile-brand-icon">
-                    💰
+                <div class="brand-name">
+                    SMART MONEY
                 </div>
 
-                <span>
-                    Smart Money
-                </span>
+                <div class="brand-subtitle">
+                    FINANCIAL INTELLIGENCE
+                </div>
 
             </div>
 
         </div>
 
 
-        <div class="navbar-center">
+        <!-- MAIN -->
 
-            <div class="search-box">
-
-                <span class="search-icon">
-                    ⌕
-                </span>
-
-                <input type="text"
-                       placeholder="Search expenses, categories...">
-
-            </div>
-
+        <div class="menu-label">
+            Overview
         </div>
 
 
-        <div class="navbar-right">
-
-            <button class="notification-button"
-                    type="button">
-
-                ♧
-
-                <span class="notification-dot"></span>
-
-            </button>
+        <ul class="navigation">
 
 
-            <div class="navbar-user">
+            <li>
 
-                <div class="navbar-avatar">
+                <a
+                    href="{{ url_for('home') }}"
+                    class="active"
+                >
 
-                    {{ username[0]|upper }}
-
-                </div>
-
-                <div class="navbar-user-info">
-
-                    <span>
-                        Welcome
+                    <span class="nav-icon">
+                        ◈
                     </span>
 
-                    <strong>
-                        {{ username }}
-                    </strong>
+                    Dashboard
 
-                </div>
+                </a>
 
-                <span class="user-arrow">
-                    ▾
-                </span>
+            </li>
 
+
+            <li>
+
+                <a
+                    href="{{ url_for('add_expense') }}"
+                >
+
+                    <span class="nav-icon">
+                        ＋
+                    </span>
+
+                    Add Expense
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{{ url_for('predict') }}"
+                >
+
+                    <span class="nav-icon">
+                        ✦
+                    </span>
+
+                    AI Prediction
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{{ url_for('budget') }}"
+                >
+
+                    <span class="nav-icon">
+                        ◫
+                    </span>
+
+                    Budget Planner
+
+                </a>
+
+            </li>
+
+
+            <li>
+
+                <a
+                    href="{{ url_for('history') }}"
+                >
+
+                    <span class="nav-icon">
+                        ≡
+                    </span>
+
+                    Transactions
+
+                </a>
+
+            </li>
+
+
+        </ul>
+
+
+        <!-- ACCOUNT -->
+
+        <div class="account-menu">
+
+
+            <div class="menu-label">
+                Account
             </div>
+
+
+            <ul class="navigation">
+
+
+                <li>
+
+                    <a href="#profile">
+
+                        <span class="nav-icon">
+                            ○
+                        </span>
+
+                        Profile
+
+                    </a>
+
+                </li>
+
+
+                <li>
+
+                    <a href="#settings">
+
+                        <span class="nav-icon">
+                            ⚙
+                        </span>
+
+                        Settings
+
+                    </a>
+
+                </li>
+
+
+                <li>
+
+                    <a
+                        href="{{ url_for('logout') }}"
+                        class="logout"
+                    >
+
+                        <span class="nav-icon">
+                            ↪
+                        </span>
+
+                        Logout
+
+                    </a>
+
+                </li>
+
+
+            </ul>
+
 
         </div>
 
-    </header>
+
+    </aside>
 
 
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
 
-    <!-- =================================================
-         PAGE WRAPPER
-    ================================================= -->
-
-    <div class="dashboard-wrapper">
-
-
-        <!-- =================================================
-             WELCOME BANNER
-        ================================================= -->
-
-        <section class="welcome-banner">
-
-            <div class="welcome-content">
-
-                <span class="welcome-label">
-                    PERSONAL FINANCE DASHBOARD
-                </span>
-
-                <h1>
-                    Good Morning, {{ username }} 👋
-                </h1>
-
-                <p>
-                    Track your spending, manage your budget,
-                    and make smarter financial decisions.
-                </p>
+    <main class="main">
 
 
-                <div class="welcome-actions">
+        <!-- TOPBAR -->
 
-                    <a href="{{ url_for('add_expense') }}"
-                       class="banner-button">
-
-                        <span>＋</span>
-                        Add Expense
-
-                    </a>
+<header class="topbar">
 
 
-                    <a href="{{ url_for('predict') }}"
-                       class="banner-button secondary">
+    <div class="top-left">
 
-                        ✦
-                        Predict Expense
 
-                    </a>
+        <button
+            class="mobile-button"
+            onclick="toggleSidebar()"
+        >
+            ☰
+        </button>
+
+
+        <div class="breadcrumb">
+
+            SMART MONEY
+
+            &nbsp;/&nbsp;
+
+            <strong>
+                Dashboard
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="top-right">
+
+
+        <!-- SEARCH -->
+        <div class="search">
+            🔍
+            <input
+                id="dashboardSearch"
+                type="search"
+                placeholder="Search dashboard..."
+                aria-label="Search dashboard"
+            >
+        </div>
+
+
+        <!-- NOTIFICATION -->
+        <div class="notification">
+            ♢
+            <span class="notification-dot"></span>
+        </div>
+
+
+        <!-- SAVINGS GOAL BUTTON -->
+        <a
+            href="{{ url_for('savings_goal') }}"
+            style="
+                background: #635bff;
+                color: white;
+                padding: 10px 16px;
+                border-radius: 10px;
+                font-size: 12px;
+                font-weight: 700;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                white-space: nowrap;
+            "
+        >
+            + Savings Goal
+        </a>
+
+
+        <!-- PROFILE -->
+        <div class="profile">
+
+
+            <div class="avatar">
+
+                {% if username %}
+
+                    {{ username[0].upper() }}
+
+                {% else %}
+
+                    N
+
+                {% endif %}
+
+            </div>
+
+
+            <div>
+
+                <div class="profile-name">
+
+                    {{ username }}
+
+                </div>
+
+
+                <div class="profile-email">
+
+                    {{ email }}
 
                 </div>
 
             </div>
 
 
-            <div class="welcome-illustration">
+        </div>
 
-                <div class="illustration-circle circle-one"></div>
 
-                <div class="illustration-circle circle-two"></div>
+    </div>
 
-                <div class="phone-illustration">
 
-                    <div class="phone-top"></div>
-
-                    <div class="phone-screen">
-
-                        <div class="phone-chart">
-                            ↗
-                        </div>
-
-                        <div class="phone-line"></div>
-                        <div class="phone-line short"></div>
-                        <div class="phone-line"></div>
-
-                    </div>
-
-                </div>
-
-                <div class="floating-coin coin-one">
-                    ₹
-                </div>
-
-                <div class="floating-coin coin-two">
-                    $
-                </div>
-
-            </div>
-
-        </section>
+</header>
 
 
 
-        <!-- =================================================
-             OVERVIEW
-        ================================================= -->
+        <!-- =====================================================
+             PAGE
+        ========================================================== --.
 
-        <section class="dashboard-section">
+        <section class="page">
 
 
-            <div class="section-title-row">
+            <!-- WELCOME -->
+
+            <div class="welcome">
+
 
                 <div>
 
-                    <span class="section-eyebrow">
-                        OVERVIEW
-                    </span>
+                    <h1>
 
-                    <h2>
-                        Your Financial Snapshot
-                    </h2>
+                        Good afternoon,
+                        {{ username }}
+                        👋
+
+                    </h1>
+
+
+                    <p>
+
+                        Here's your complete financial
+                        overview for smarter spending.
+
+                    </p>
 
                 </div>
 
 
-                <span class="period-label">
-                    Current Records
-                </span>
+                <div class="overview-tag">
+
+                    ● Live Financial Overview
+
+                </div>
+
 
             </div>
 
+            <div
+                id="dashboardSearchNoResults"
+                hidden
+                style="padding: 18px 0; color: var(--text-light);"
+            >
+                No matching dashboard items found.
+            </div>
 
-            <div class="stats-grid">
+
+            <!-- =================================================
+                 MONEY CARDS
+            ================================================== -->
+
+            <div class="money-grid">
 
 
                 <!-- TOTAL -->
 
-                <div class="stat-card">
+                <div
+                    class="
+                        money-card
+                        primary
+                    "
+                >
 
-                    <div class="stat-top">
+                    <div
+                        class="
+                            money-icon
+                        "
+                        style="
+                            background:
+                            rgba(255,255,255,0.13);
+                        "
+                    >
 
-                        <div class="stat-icon green">
-                            ₹
-                        </div>
-
-                        <span class="stat-trend positive">
-                            ↑ Spending
-                        </span>
+                        ₹
 
                     </div>
 
-                    <p>
-                        Total Expense
-                    </p>
 
-                    <h3>
-                        ₹{{ "%.2f"|format(total_expense) }}
-                    </h3>
+                    <div class="money-label">
 
-                    <span class="stat-description">
-                        Overall spending
-                    </span>
+                        TOTAL SPENDING
 
-                    <div class="mini-chart green-chart">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
                     </div>
+
+
+                    <div class="money-value">
+
+                        ₹{{
+                            "{:,.2f}".format(
+                                total_expense|float
+                            )
+                        }}
+
+                    </div>
+
+
+                    <div class="money-small">
+
+                        Across all recorded expenses
+
+                    </div>
+
 
                 </div>
-
 
 
                 <!-- AVERAGE -->
 
-                <div class="stat-card">
+                <div class="money-card">
 
-                    <div class="stat-top">
 
-                        <div class="stat-icon purple">
-                            ◫
-                        </div>
+                    <div
+                        class="
+                            money-icon
+                            icon-blue
+                        "
+                    >
 
-                        <span class="stat-trend positive">
-                            ↑ Average
-                        </span>
+                        ↗
 
                     </div>
 
-                    <p>
-                        Average Expense
-                    </p>
 
-                    <h3>
-                        ₹{{ "%.2f"|format(average_expense) }}
-                    </h3>
+                    <div class="money-label">
 
-                    <span class="stat-description">
-                        Average per transaction
-                    </span>
+                        AVERAGE EXPENSE
 
-                    <div class="mini-chart purple-chart">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
                     </div>
+
+
+                    <div class="money-value">
+
+                        ₹{{
+                            "{:,.2f}".format(
+                                average_expense|float
+                            )
+                        }}
+
+                    </div>
+
+
+                    <div class="money-small">
+
+                        Per transaction
+
+                    </div>
+
 
                 </div>
-
 
 
                 <!-- HIGHEST -->
 
-                <div class="stat-card">
+                <div class="money-card">
 
-                    <div class="stat-top">
 
-                        <div class="stat-icon pink">
-                            ★
-                        </div>
+                    <div
+                        class="
+                            money-icon
+                            icon-orange
+                        "
+                    >
 
-                        <span class="stat-trend neutral">
-                            Highest
-                        </span>
+                        ↑
 
                     </div>
 
-                    <p>
-                        Highest Expense
-                    </p>
 
-                    <h3>
-                        ₹{{ "%.2f"|format(highest_expense) }}
-                    </h3>
+                    <div class="money-label">
 
-                    <span class="stat-description">
-                        Largest transaction
-                    </span>
+                        HIGHEST EXPENSE
 
-                    <div class="mini-chart pink-chart">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
                     </div>
+
+
+                    <div class="money-value">
+
+                        ₹{{
+                            "{:,.2f}".format(
+                                highest_expense|float
+                            )
+                        }}
+
+                    </div>
+
+
+                    <div class="money-small">
+
+                        Largest recorded transaction
+
+                    </div>
+
 
                 </div>
-
 
 
                 <!-- TRANSACTIONS -->
 
-                <div class="stat-card">
+                <div class="money-card">
 
-                    <div class="stat-top">
 
-                        <div class="stat-icon blue">
-                            #
-                        </div>
+                    <div
+                        class="
+                            money-icon
+                            icon-green
+                        "
+                    >
 
-                        <span class="stat-trend positive">
-                            ↑ Records
-                        </span>
+                        #
 
                     </div>
 
-                    <p>
-                        Total Entries
-                    </p>
 
-                    <h3>
-                        {{ transaction_count }}
-                    </h3>
+                    <div class="money-label">
 
-                    <span class="stat-description">
-                        Recorded transactions
-                    </span>
+                        TRANSACTIONS
 
-                    <div class="mini-chart blue-chart">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
                     </div>
+
+
+                    <div class="money-value">
+
+                        {{ total_entries }}
+
+                    </div>
+
+
+                    <div class="money-small">
+
+                        Total expense records
+
+                    </div>
+
 
                 </div>
 
+
             </div>
 
-        </section>
+
+            <!-- =================================================
+                 ANALYTICS
+            ================================================== -->
+
+            <div class="analytics">
 
 
+                <!-- SPENDING TREND -->
 
-        <!-- =================================================
-             ANALYTICS
-        ================================================= -->
-
-        <section class="dashboard-section">
+                <div class="panel">
 
 
-            <div class="section-title-row">
+                    <div class="section-title">
 
-                <div>
 
-                    <span class="section-eyebrow">
-                        ANALYTICS
-                    </span>
+                        <h2>
+                            Spending Trend
+                        </h2>
+
+
+                        <span>
+                            Monthly overview
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="chart-box">
+
+                        <canvas
+                            id="spendingChart"
+                        ></canvas>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- CATEGORY -->
+
+                <div class="panel">
+
+
+                    <div class="section-title">
+
+
+                        <h2>
+                            Spending Breakdown
+                        </h2>
+
+
+                        <span>
+                            By category
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="category-layout">
+
+
+                        <div class="donut">
+
+                            <canvas
+                                id="categoryChart"
+                            ></canvas>
+
+                        </div>
+
+
+                        <div class="category-list">
+
+
+                            {% if category_expenses %}
+
+
+                                {% for category, amount in category_expenses %}
+
+
+                                <div class="category-item">
+
+
+                                    <div
+                                        class="category-left"
+                                    >
+
+                                        <span
+                                            class="category-dot"
+                                        ></span>
+
+                                        {{ category }}
+
+                                    </div>
+
+
+                                    <div
+                                        class="category-right"
+                                    >
+
+                                        ₹{{
+                                            "{:,.0f}".format(
+                                                amount|float
+                                            )
+                                        }}
+
+
+                                        <span
+                                            class="
+                                                category-percent
+                                            "
+                                        >
+
+                                            {% if total_expense %}
+
+                                                {{
+                                                    "{:.0f}".format(
+                                                        (
+                                                            amount|float
+                                                        )
+                                                        /
+                                                        (
+                                                            total_expense|float
+                                                        )
+                                                        * 100
+                                                    )
+                                                }}%
+
+                                            {% else %}
+
+                                                0%
+
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                {% endfor %}
+
+
+                            {% else %}
+
+
+                                <div
+                                    style="
+                                        color:#98a2b3;
+                                        font-size:11px;
+                                    "
+                                >
+
+                                    No category data.
+
+                                </div>
+
+
+                            {% endif %}
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 QUICK ACTIONS
+            ================================================== -->
+
+            <div class="quick-section">
+
+
+                <div class="section-title">
+
 
                     <h2>
-                        Spending Overview
+                        Quick Actions
                     </h2>
 
-                </div>
 
+                    <span>
+                        Manage your finances
+                    </span>
 
-                <a href="{{ url_for('history') }}"
-                   class="view-link">
-
-                    View History →
-                    
-                </a>
-
-            </div>
-
-
-            <div class="analytics-grid">
-
-
-                <!-- SPENDING GRAPH -->
-
-                <div class="modern-panel spending-panel">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <div class="panel-icon blue-icon">
-                                ↗
-                            </div>
-
-                            <div class="panel-title">
-
-                                <h3>
-                                    Spending Overview
-                                </h3>
-
-                                <p>
-                                    Your category spending distribution
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <span class="panel-badge">
-                            All Time
-                        </span>
-
-                    </div>
-
-
-                    <div class="spending-visual">
-
-                        <div class="vertical-scale">
-
-                            <span>₹3K</span>
-                            <span>₹2K</span>
-                            <span>₹1K</span>
-                            <span>₹0</span>
-
-                        </div>
-
-
-                        <div class="bar-chart">
-
-                            {% if category_expenses %}
-
-                                {% for category, amount in category_expenses %}
-
-                                    <div class="bar-item">
-
-                                        <div class="bar-value">
-                                            ₹{{ "%.0f"|format(amount) }}
-                                        </div>
-
-                                        <div class="bar"
-                                             style="height: {{ [((amount / highest_expense) * 150), 20]|max }}px;">
-                                        </div>
-
-                                        <span>
-                                            {{ category[:4] }}
-                                        </span>
-
-                                    </div>
-
-                                {% endfor %}
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
 
                 </div>
 
 
+                <div class="quick-grid">
 
-                <!-- CATEGORY BREAKDOWN -->
 
-                <div class="modern-panel category-panel">
+                    <a
+                        href="{{ url_for('add_expense') }}"
+                        class="quick"
+                    >
 
-                    <div class="panel-header">
+                        <div
+                            class="
+                                quick-icon
+                                icon-purple
+                            "
+                        >
+
+                            ＋
+
+                        </div>
+
 
                         <div>
 
-                            <div class="panel-icon orange-icon">
-                                ◉
-                            </div>
-
-                            <div class="panel-title">
-
-                                <h3>
-                                    Expense Breakdown
-                                </h3>
-
-                                <p>
-                                    By category
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="category-breakdown">
-
-                        <div class="donut-chart">
-
-                            <div class="donut-inner">
-
-                                <strong>
-                                    ₹{{ "%.0f"|format(total_expense) }}
-                                </strong>
-
-                                <span>
-                                    Total Expense
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="category-legend">
-
-                            {% if category_expenses %}
-
-                                {% for category, amount in category_expenses %}
-
-                                    <div class="legend-item">
-
-                                        <span class="legend-left">
-
-                                            <span class="legend-dot
-                                                {% if loop.index == 1 %}dot-orange
-                                                {% elif loop.index == 2 %}dot-pink
-                                                {% elif loop.index == 3 %}dot-blue
-                                                {% elif loop.index == 4 %}dot-green
-                                                {% elif loop.index == 5 %}dot-purple
-                                                {% else %}dot-gray
-                                                {% endif %}">
-                                            </span>
-
-                                            {{ category }}
-
-                                        </span>
-
-                                        <strong>
-                                            ₹{{ "%.0f"|format(amount) }}
-                                        </strong>
-
-                                    </div>
-
-                                {% endfor %}
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             QUICK ACTIONS + PREDICTION
-        ================================================= -->
-
-        <section class="dashboard-section">
-
-
-            <div class="actions-prediction-grid">
-
-
-                <!-- QUICK ACTIONS -->
-
-                <div class="modern-panel quick-panel">
-
-                    <div class="panel-header">
-
-                        <div>
-
-                            <div class="panel-icon blue-icon">
-                                ✦
-                            </div>
-
-                            <div class="panel-title">
-
-                                <h3>
-                                    Quick Actions
-                                </h3>
-
-                                <p>
-                                    Manage your expenses easily
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="quick-actions">
-
-
-                        <a href="{{ url_for('add_expense') }}"
-                           class="action-tile green-tile">
-
-                            <div class="action-icon">
-                                ＋
-                            </div>
-
-                            <h4>
+                            <h3>
                                 Add Expense
-                            </h4>
+                            </h3>
 
                             <p>
-                                Record a new expense
+                                Record spending
                             </p>
 
-                            <span class="action-arrow">
-                                →
-                            </span>
+                        </div>
 
-                        </a>
+                    </a>
 
 
-                        <a href="{{ url_for('predict') }}"
-                           class="action-tile purple-tile">
+                    <a
+                        href="{{ url_for('predict') }}"
+                        class="quick"
+                    >
 
-                            <div class="action-icon">
-                                ✦
-                            </div>
+                        <div
+                            class="
+                                quick-icon
+                                icon-blue
+                            "
+                        >
 
-                            <h4>
-                                Predict Expense
-                            </h4>
+                            ✦
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                AI Prediction
+                            </h3>
 
                             <p>
                                 Predict future spending
                             </p>
 
-                            <span class="action-arrow">
-                                →
-                            </span>
+                        </div>
 
-                        </a>
+                    </a>
 
 
-                        <a href="{{ url_for('budget') }}"
-                           class="action-tile orange-tile">
+                    <a
+                        href="{{ url_for('budget') }}"
+                        class="quick"
+                    >
 
-                            <div class="action-icon">
-                                ◎
-                            </div>
+                        <div
+                            class="
+                                quick-icon
+                                icon-green
+                            "
+                        >
 
-                            <h4>
+                            ◫
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
                                 Budget Planner
-                            </h4>
+                            </h3>
 
                             <p>
-                                Manage your budgets
+                                Control your budget
                             </p>
 
-                            <span class="action-arrow">
-                                →
-                            </span>
+                        </div>
 
-                        </a>
+                    </a>
 
 
-                        <a href="{{ url_for('history') }}"
-                           class="action-tile blue-tile">
+                    <a
+                        href="{{ url_for('history') }}"
+                        class="quick"
+                    >
 
-                            <div class="action-icon">
-                                ▤
-                            </div>
+                        <div
+                            class="
+                                quick-icon
+                                icon-orange
+                            "
+                        >
 
-                            <h4>
-                                Expense History
-                            </h4>
+                            ≡
+
+                        </div>
+
+
+                        <div>
+
+                            <h3>
+                                Transactions
+                            </h3>
 
                             <p>
-                                View transactions
+                                View expense history
                             </p>
 
-                            <span class="action-arrow">
-                                →
-                            </span>
+                        </div>
 
-                        </a>
+                    </a>
 
-                    </div>
 
                 </div>
 
 
+            </div>
 
-                <!-- AI PREDICTION -->
 
-                <div class="ai-prediction-card">
+            <!-- =================================================
+                 LOWER GRID
+            ================================================== -->
 
-                    <div class="ai-glow"></div>
+            <div class="lower-grid">
 
-                    <div class="ai-content">
 
-                        <div class="ai-label">
-                            ✦ AI POWERED
-                        </div>
+                <!-- TRANSACTIONS -->
+
+                <div class="panel">
+
+
+                    <div class="section-title">
+
 
                         <h2>
-                            Expense Prediction
+                            Recent Transactions
                         </h2>
 
-                        <p>
-                            Use machine learning to estimate
-                            your future expenses and plan ahead.
-                        </p>
 
+                        <a
+                            href="{{ url_for('history') }}"
+                        >
 
-                        <div class="ai-feature">
+                            <span
+                                style="
+                                    color:#635bff;
+                                    font-weight:700;
+                                "
+                            >
 
-                            <span>
-                                🤖
+                                View all →
+
                             </span>
-
-                            <div>
-
-                                <strong>
-                                    Smart Prediction
-                                </strong>
-
-                                <small>
-                                    Based on your spending patterns
-                                </small>
-
-                            </div>
-
-                        </div>
-
-
-                        <a href="{{ url_for('predict') }}"
-                           class="ai-button">
-
-                            View Prediction
-                            <span>→</span>
 
                         </a>
 
-                    </div>
-
-
-                    <div class="ai-decoration">
-
-                        <div class="ai-brain">
-                            ✦
-                        </div>
-
-                        <div class="ai-line line-1"></div>
-                        <div class="ai-line line-2"></div>
-                        <div class="ai-line line-3"></div>
 
                     </div>
 
-                </div>
 
-            </div>
-
-        </section>
+                    {% if recent_expenses %}
 
 
-
-        <!-- =================================================
-             BUDGET STATUS
-        ================================================= -->
-
-        <section class="dashboard-section">
+                        {% for expense in recent_expenses[:6] %}
 
 
-            <div class="section-title-row">
-
-                <div>
-
-                    <span class="section-eyebrow">
-                        BUDGET
-                    </span>
-
-                    <h2>
-                        Budget Status
-                    </h2>
-
-                </div>
+                        <div class="transaction">
 
 
-                <a href="{{ url_for('budget') }}"
-                   class="view-link">
-
-                    Manage Budget →
-
-                </a>
-
-            </div>
+                            <div class="transaction-left">
 
 
-            <div class="budget-grid">
+                                <div
+                                    class="
+                                        transaction-icon
+                                    "
+                                >
 
 
-                {% set budgets = {
-                    "Food": 3000,
-                    "Travel": 2000,
-                    "Shopping": 3000,
-                    "Bills": 2500,
-                    "Health": 1500,
-                    "Entertainment": 2000
-                } %}
+                                    {% if expense["Category"] == "Food" %}
 
+                                        🍔
 
-                {% if category_expenses %}
+                                    {% elif expense["Category"] == "Shopping" %}
 
-                    {% for category, amount in category_expenses %}
+                                        🛍️
 
-                        {% set budget = budgets.get(category, 2000) %}
-                        {% set percentage = (amount / budget * 100) %}
+                                    {% elif expense["Category"] == "Travel" %}
 
+                                        ✈️
 
-                        <div class="budget-card">
+                                    {% elif expense["Category"] == "Bills" %}
 
-                            <div class="budget-card-top">
+                                        💡
 
-                                <div class="budget-category">
+                                    {% elif expense["Category"] == "Health" %}
 
-                                    <div class="budget-category-icon">
+                                        ❤️
 
-                                        {% if category == "Food" %}
-                                            🍔
-                                        {% elif category == "Travel" %}
-                                            ✈️
-                                        {% elif category == "Shopping" %}
-                                            🛍️
-                                        {% elif category == "Bills" %}
-                                            🧾
-                                        {% elif category == "Health" %}
-                                            ❤️
-                                        {% elif category == "Entertainment" %}
-                                            🎬
-                                        {% else %}
-                                            💰
-                                        {% endif %}
+                                    {% elif expense["Category"] == "Entertainment" %}
 
-                                    </div>
+                                        🎬
 
-                                    <div>
-
-                                        <h4>
-                                            {{ category }}
-                                        </h4>
-
-                                        <span>
-                                            Monthly budget
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-
-                                {% if percentage >= 80 %}
-
-                                    <span class="budget-status warning">
-                                        Warning
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="budget-status good">
-                                        Good
-                                    </span>
-
-                                {% endif %}
-
-                            </div>
-
-
-                            <div class="budget-amount">
-
-                                <strong>
-                                    ₹{{ "%.0f"|format(amount) }}
-                                </strong>
-
-                                <span>
-                                    / ₹{{ "%.0f"|format(budget) }}
-                                </span>
-
-                            </div>
-
-
-                            <div class="budget-progress">
-
-                                <div class="budget-progress-fill
-                                    {% if percentage >= 80 %}
-                                        warning-progress
                                     {% else %}
-                                        good-progress
-                                    {% endif %}"
-                                    style="width: {{ [percentage, 100]|min }}%;">
-                                </div>
 
-                            </div>
+                                        💳
 
-
-                            <div class="budget-footer">
-
-                                <span>
-                                    {{ "%.1f"|format(percentage) }}%
-                                </span>
-
-                                <span>
-
-                                    {% if percentage >= 80 %}
-                                        Near budget limit
-                                    {% else %}
-                                        Within budget
                                     {% endif %}
 
-                                </span>
 
+                                </div>
+
+
+                                <div>
+
+
+                                    <div
+                                        class="
+                                            transaction-name
+                                        "
+                                    >
+
+                                        {{ expense["Category"] }}
+
+                                    </div>
+
+
+                                    <div
+                                        class="
+                                            transaction-meta
+                                        "
+                                    >
+
+                                        {{ expense["Description"] }}
+
+                                        &nbsp; • &nbsp;
+
+                                        {{ expense["Payment_Mode"] }}
+
+                                        &nbsp; • &nbsp;
+
+                                        {{ expense["Date"] }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    transaction-amount
+                                "
+                            >
+
+                                - ₹{{
+                                    "{:,.0f}".format(
+                                        expense["Amount"]|float
+                                    )
+                                }}
+
+                            </div>
+
+
+                        </div>
+
+
+                        {% endfor %}
+
+
+                    {% else %}
+
+
+                        <div
+                            style="
+                                text-align:center;
+                                padding:30px;
+                                color:#98a2b3;
+                                font-size:11px;
+                            "
+                        >
+
+                            No recent transactions.
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- AI INSIGHT -->
+
+                <div
+                    class="
+                        panel
+                        ai-card
+                    "
+                >
+
+
+                    <div class="ai-top">
+
+
+                        <div class="ai-icon">
+
+                            ✦
+
+                        </div>
+
+
+                        <div>
+
+
+                            <div class="ai-title">
+
+                                AI Money Insight
+
+                            </div>
+
+
+                            <div class="ai-subtitle">
+
+                                Machine learning prediction
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="ai-label">
+
+                        PREDICTED EXPENSE
+
+                    </div>
+
+
+                    <div class="ai-value">
+
+
+                        {% if dashboard_prediction is not none %}
+
+                            ₹{{
+                                "{:,.2f}".format(
+                                    dashboard_prediction|float
+                                )
+                            }}
+
+                        {% else %}
+
+                            ₹0.00
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                    <div class="ai-message">
+
+
+                        {% if dashboard_prediction is not none %}
+
+
+                            Your prediction is generated using
+                            historical expense patterns.
+                            Use this insight to plan your
+                            upcoming spending more effectively.
+
+
+                        {% else %}
+
+
+                            Add more expenses to generate an
+                            AI-powered spending prediction.
+
+
+                        {% endif %}
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SMART ALERT CENTER
+                 NEW ADD-ON SECTION - EXISTING DASHBOARD UNCHANGED
+            ================================================== -->
+
+            <section class="sm-alert-center">
+
+                <div class="sm-alert-header">
+
+                    <div class="sm-alert-heading">
+
+                        <div class="sm-alert-icon">🚦</div>
+
+                        <div class="sm-alert-title">
+                            <h2>SMART ALERT CENTER</h2>
+                            <p>Stay on top of your spending</p>
+                        </div>
+
+                    </div>
+
+                    {% set active_alert_count = budget_alerts
+                        | selectattr("status", "ne", "Good")
+                        | list
+                        | length %}
+
+                    <div class="sm-alert-count">
+                        🔔 {{ active_alert_count }}
+                    </div>
+
+                </div>
+
+                {% if budget_alerts %}
+
+                    {% for alert in budget_alerts %}
+
+                        <div class="sm-alert-item
+                            {% if alert.status == 'Exceeded' %}
+                                sm-alert-item-danger
+                            {% elif alert.status == 'Warning' %}
+                                sm-alert-item-warning
+                            {% else %}
+                                sm-alert-item-success
+                            {% endif %}
+                        ">
+
+                            <div class="sm-alert-status">
+                                {% if alert.status == 'Exceeded' %}
+                                    🔴
+                                {% elif alert.status == 'Warning' %}
+                                    🟡
+                                {% else %}
+                                    🟢
+                                {% endif %}
+                            </div>
+
+                            <div class="sm-alert-content">
+
+                                <h3>
+                                    {% if alert.status == 'Exceeded' %}
+                                        Budget exceeded
+                                    {% elif alert.status == 'Warning' %}
+                                        Spending warning
+                                    {% else %}
+                                        Great job!
+                                    {% endif %}
+                                </h3>
+
+                                <p>
+                                    {% if alert.status == 'Exceeded' %}
+                                        {{ alert.category }} is above your planned limit.
+                                    {% elif alert.status == 'Warning' %}
+                                        {{ alert.category }} spending is getting close to your limit.
+                                    {% else %}
+                                        You're within your {{ alert.category }} budget.
+                                    {% endif %}
+                                </p>
+
+                            </div>
+
+                            <div class="sm-alert-percent">
+                                {{ alert.percent }}%
+                                <span>used</span>
                             </div>
 
                         </div>
 
                     {% endfor %}
 
+                {% else %}
+
+                    <div class="sm-alert-empty">
+                        <div class="sm-alert-empty-icon">🟢</div>
+                        <div>
+                            <h3>You're doing great!</h3>
+                            <p>No budget alerts right now.</p>
+                        </div>
+                    </div>
+
                 {% endif %}
 
-            </div>
+                <div class="sm-alert-footer">
+                    <a href="{{ url_for('budget') }}" class="sm-alert-button">
+                        View Budget Details →
+                    </a>
+                </div>
 
-        </section>
+            </section>
+
+            <!-- =================================================
+                 BUDGET HEALTH
+            ================================================== -->
+
+            <div
+                class="
+                    panel
+                    budget-panel
+                "
+            >
 
 
+                <div class="budget-header">
 
-        <!-- =================================================
-             PAYMENT SUMMARY
-        ================================================= -->
-
-        <section class="dashboard-section">
-
-
-            <div class="payment-panel modern-panel">
-
-                <div class="panel-header">
 
                     <div>
 
-                        <div class="panel-icon green-icon">
-                            💳
+                        <div
+                            style="
+                                font-size:15px;
+                                font-weight:750;
+                                margin-bottom:4px;
+                            "
+                        >
+
+                            Budget Health
+
                         </div>
 
-                        <div class="panel-title">
 
-                            <h3>
-                                Payment Summary
-                            </h3>
+                        <div
+                            style="
+                                font-size:10px;
+                                color:#667085;
+                            "
+                        >
 
-                            <p>
-                                How you are paying for expenses
-                            </p>
+                            Monitor your current spending level
 
                         </div>
 
                     </div>
 
-                </div>
+
+                    {% if overall_status == "Good" %}
 
 
-                <div class="payment-grid">
+                        <span
+                            class="
+                                budget-status
+                                good
+                            "
+                        >
 
-                    {% if payment_expenses %}
+                            ● Good Standing
 
-                        {% for payment, amount in payment_expenses %}
+                        </span>
 
-                            <div class="payment-card">
 
-                                <div class="payment-card-icon">
-                                    💳
-                                </div>
+                    {% elif overall_status == "Warning" %}
 
-                                <div class="payment-card-info">
 
-                                    <span>
-                                        {{ payment }}
-                                    </span>
+                        <span
+                            class="
+                                budget-status
+                                warning
+                            "
+                        >
 
-                                    <strong>
-                                        ₹{{ "%.2f"|format(amount) }}
-                                    </strong>
+                            ● Watch Spending
 
-                                </div>
+                        </span>
 
-                                <div class="payment-percent">
 
-                                    {% if total_expense > 0 %}
+                    {% else %}
 
-                                        {{ "%.1f"|format((amount / total_expense) * 100) }}%
 
-                                    {% else %}
+                        <span
+                            class="
+                                budget-status
+                                danger
+                            "
+                        >
 
-                                        0%
+                            ● Attention Needed
 
-                                    {% endif %}
+                        </span>
 
-                                </div>
-
-                            </div>
-
-                        {% endfor %}
 
                     {% endif %}
 
+
                 </div>
 
-            </div>
 
-        </section>
-
+                <div class="budget-values">
 
 
-        <!-- =================================================
-             HIGHLIGHTS
-        ================================================= -->
-
-        <section class="dashboard-section">
-
-
-            <div class="section-title-row">
-
-                <div>
-
-                    <span class="section-eyebrow">
-                        INSIGHTS
+                    <span>
+                        Total spending
                     </span>
 
-                    <h2>
-                        Financial Highlights
-                    </h2>
 
-                </div>
+                    <strong>
 
-            </div>
+                        ₹{{
+                            "{:,.0f}".format(
+                                total_expense|float
+                            )
+                        }}
 
+                    </strong>
 
-            <div class="highlights-grid">
-
-
-                <div class="highlight-card">
-
-                    <div class="highlight-icon purple-highlight">
-                        ★
-                    </div>
-
-                    <div>
-
-                        <span>
-                            TOP SPENDING CATEGORY
-                        </span>
-
-                        {% if category_expenses %}
-
-                            <h3>
-                                {{ category_expenses[0][0] }}
-                            </h3>
-
-                        {% else %}
-
-                            <h3>
-                                No Data
-                            </h3>
-
-                        {% endif %}
-
-                        <p>
-                            Highest spending category
-                        </p>
-
-                    </div>
 
                 </div>
 
 
+                <div class="progress">
 
-                <div class="highlight-card">
-
-                    <div class="highlight-icon green-highlight">
-                        ₹
-                    </div>
-
-                    <div>
-
-                        <span>
-                            AVERAGE SPENDING
-                        </span>
-
-                        <h3>
-                            ₹{{ "%.2f"|format(average_expense) }}
-                        </h3>
-
-                        <p>
-                            Per transaction
-                        </p>
-
-                    </div>
+                    <div
+                        class="progress-bar"
+                    ></div>
 
                 </div>
 
 
+                <div class="budget-description">
 
-                <div class="highlight-card">
 
-                    <div class="highlight-icon orange-highlight">
-                        !
-                    </div>
+                    {% if top_category %}
 
-                    <div>
 
-                        <span>
-                            BUDGET STATUS
-                        </span>
+                        Highest spending category:
 
-                        <h3>
-                            {% if category_expenses %}
-                                {% set warning_count = namespace(value=0) %}
+                        <strong>
+                            {{ top_category }}
+                        </strong>
 
-                                {% for category, amount in category_expenses %}
+                        —
 
-                                    {% set budget = budgets.get(category, 2000) %}
+                        ₹{{
+                            "{:,.0f}".format(
+                                top_category_amount|float
+                            )
+                        }}
 
-                                    {% if (amount / budget * 100) >= 80 %}
-                                        {% set warning_count.value = warning_count.value + 1 %}
-                                    {% endif %}
 
-                                {% endfor %}
+                    {% else %}
 
-                                {% if warning_count.value > 0 %}
-                                    Attention
-                                {% else %}
-                                    Good
-                                {% endif %}
 
-                            {% else %}
-                                Good
-                            {% endif %}
-                        </h3>
+                        Add expenses to start receiving
+                        personalized budget insights.
 
-                        <p>
-                            Keep monitoring your budget
-                        </p>
 
-                    </div>
+                    {% endif %}
+
 
                 </div>
 
 
+                <!-- PAYMENT METHODS -->
 
-                <div class="highlight-card">
+                <div class="payment-grid">
 
-                    <div class="highlight-icon blue-highlight">
-                        #
-                    </div>
 
-                    <div>
+                    {% if payment_expenses %}
 
-                        <span>
-                            TOTAL TRANSACTIONS
-                        </span>
 
-                        <h3>
-                            {{ transaction_count }}
-                        </h3>
+                        {% for payment, amount in payment_expenses %}
 
-                        <p>
-                            Recorded expenses
-                        </p>
 
-                    </div>
+                        <div class="payment-item">
 
-                </div>
 
-            </div>
+                            <div class="payment-name">
 
-        </section>
+                                {{ payment }}
 
+                            </div>
 
 
-        <!-- =================================================
-             RECENT TRANSACTIONS
-        ================================================= -->
+                            <div class="payment-value">
 
-        <section class="dashboard-section">
+                                ₹{{
+                                    "{:,.0f}".format(
+                                        amount|float
+                                    )
+                                }}
 
+                            </div>
 
-            <div class="section-title-row">
 
-                <div>
-
-                    <span class="section-eyebrow">
-                        ACTIVITY
-                    </span>
-
-                    <h2>
-                        Recent Transactions
-                    </h2>
-
-                </div>
-
-
-                <a href="{{ url_for('history') }}"
-                   class="view-link">
-
-                    View All →
-
-                </a>
-
-            </div>
-
-
-            <div class="modern-panel transaction-panel">
-
-                {% if recent_expenses %}
-
-                    <div class="transaction-table-wrapper">
-
-                        <table class="modern-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        DATE
-                                    </th>
-
-                                    <th>
-                                        CATEGORY
-                                    </th>
-
-                                    <th>
-                                        AMOUNT
-                                    </th>
-
-                                    <th>
-                                        PAYMENT MODE
-                                    </th>
-
-                                    <th>
-                                        DESCRIPTION
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody>
-
-                                {% for expense in recent_expenses %}
-
-                                    <tr>
-
-                                        <td>
-
-                                            <span class="date-text">
-
-                                                {{ expense.Date }}
-
-                                            </span>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <span class="transaction-category">
-
-                                                {% if expense.Category == "Food" %}
-                                                    🍔
-                                                {% elif expense.Category == "Travel" %}
-                                                    ✈️
-                                                {% elif expense.Category == "Shopping" %}
-                                                    🛍️
-                                                {% elif expense.Category == "Bills" %}
-                                                    🧾
-                                                {% elif expense.Category == "Health" %}
-                                                    ❤️
-                                                {% elif expense.Category == "Entertainment" %}
-                                                    🎬
-                                                {% else %}
-                                                    💰
-                                                {% endif %}
-
-                                                {{ expense.Category }}
-
-                                            </span>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <strong class="transaction-amount">
-
-                                                ₹{{ "%.2f"|format(expense.Amount) }}
-
-                                            </strong>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <span class="payment-badge">
-
-                                                {{ expense.Payment_Mode }}
-
-                                            </span>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <span class="description-text">
-
-                                                {{ expense.Description }}
-
-                                            </span>
-
-                                        </td>
-
-                                    </tr>
-
-                                {% endfor %}
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                {% else %}
-
-                    <div class="empty-state">
-
-                        <div class="empty-state-icon">
-                            🧾
                         </div>
 
-                        <h3>
-                            No Transactions Yet
-                        </h3>
 
-                        <p>
-                            Add your first expense to start tracking
-                            your financial activity.
-                        </p>
+                        {% endfor %}
 
-                        <a href="{{ url_for('add_expense') }}"
-                           class="primary-button">
 
-                            ＋ Add Expense
+                    {% else %}
 
-                        </a>
 
-                    </div>
+                        <div class="payment-item">
 
-                {% endif %}
+                            <div class="payment-name">
+                                Payment Methods
+                            </div>
+
+                            <div class="payment-value">
+                                No data
+                            </div>
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                </div>
+
 
             </div>
+
+
+            <!-- FOOTER -->
+
+            <div class="footer">
+
+                SMART MONEY
+                •
+                Smart Expense Prediction & Budget Planner
+                •
+                2026
+
+            </div>
+
 
         </section>
 
 
-
-        <!-- =================================================
-             SAVING MESSAGE
-        ================================================= -->
-
-        <section class="saving-banner">
-
-            <div class="saving-content">
-
-                <span class="saving-small">
-                    YOUR FINANCIAL JOURNEY
-                </span>
-
-                <h2>
-                    Small Steps.
-                    <span>Big Goals.</span>
-                </h2>
-
-                <p>
-                    Every expense you track brings you one step
-                    closer to better financial control.
-                </p>
-
-                <a href="{{ url_for('budget') }}"
-                   class="saving-button">
-
-                    Start Planning
-                    <span>→</span>
-
-                </a>
-
-            </div>
+    </main>
 
 
-            <div class="saving-decoration">
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
 
-                <div class="plant-pot">
-                    🌱
-                </div>
-
-                <div class="saving-coin coin-a">
-                    ₹
-                </div>
-
-                <div class="saving-coin coin-b">
-                    ₹
-                </div>
-
-                <div class="saving-coin coin-c">
-                    ₹
-                </div>
-
-            </div>
-
-        </section>
+    <script>
 
 
+        /* =====================================================
+           DASHBOARD SEARCH
+        ===================================================== */
 
-        <!-- =================================================
-             FOOTER
-        ================================================= -->
+        const dashboardSearch =
+            document.getElementById("dashboardSearch");
 
-        <footer class="dashboard-footer">
+        const searchableDashboardItems =
+            document.querySelectorAll(
+                ".money-card, .panel, .quick, .sm-alert-center, .payment-item"
+            );
 
-            <div>
+        if (dashboardSearch) {
 
-                <strong>
-                    💰 Smart Money
-                </strong>
+            dashboardSearch.addEventListener(
+                "input",
+                function () {
 
-                <span>
-                    Smart Expense Prediction & Budget Planner
-                </span>
+                    const query =
+                        dashboardSearch.value.trim().toLowerCase();
 
-            </div>
+                    let visibleItems = 0;
 
-            <p>
-                Manage your money. Understand your spending.
-            </p>
+                    searchableDashboardItems.forEach(function (item) {
 
-        </footer>
+                        const matches =
+                            !query ||
+                            item.textContent.toLowerCase().includes(query);
+
+                        item.hidden = !matches;
+
+                        if (matches) {
+                            visibleItems += 1;
+                        }
+
+                    });
+
+                    const noResults =
+                        document.getElementById("dashboardSearchNoResults");
+
+                    if (noResults) {
+                        noResults.hidden = visibleItems > 0;
+                    }
+
+                }
+            );
+
+        }
 
 
-    </div>
+        /* =====================================================
+           MOBILE SIDEBAR
+        ===================================================== */
 
-</main>
+        function toggleSidebar() {
+
+            const sidebar =
+                document.getElementById(
+                    "sidebar"
+                );
+
+            sidebar.classList.toggle(
+                "open"
+            );
+
+        }
 
 
+        /* =====================================================
+           MONTHLY DATA
+        ===================================================== */
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
+        const monthlyLabels = [
 
-<script src="{{ url_for('static', filename='menu.js') }}"></script>
+            {% if monthly_labels %}
+
+                {% for label in monthly_labels %}
+
+                    "{{ label|string|replace('"','\\"') }}"
+
+                    {% if not loop.last %}
+                        ,
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+
+        ];
+
+
+        const monthlyValues = [
+
+            {% if monthly_values %}
+
+                {% for value in monthly_values %}
+
+                    {{ value|float }}
+
+                    {% if not loop.last %}
+                        ,
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+
+        ];
+
+
+        /* =====================================================
+           CATEGORY DATA
+
+           Backend structure:
+
+           ("Shopping", 2400)
+           ("Bills", 2100)
+           ("Food", 1420)
+        ===================================================== */
+
+        const categoryLabels = [
+
+            {% if category_expenses %}
+
+                {% for category, amount in category_expenses %}
+
+                    "{{ category|string|replace('"','\\"') }}"
+
+                    {% if not loop.last %}
+                        ,
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+
+        ];
+
+
+        const categoryValues = [
+
+            {% if category_expenses %}
+
+                {% for category, amount in category_expenses %}
+
+                    {{ amount|float }}
+
+                    {% if not loop.last %}
+                        ,
+                    {% endif %}
+
+                {% endfor %}
+
+            {% endif %}
+
+        ];
+
+
+        /* =====================================================
+           SPENDING TREND CHART
+        ===================================================== */
+
+        const spendingCanvas =
+            document.getElementById(
+                "spendingChart"
+            );
+
+
+        if (
+            spendingCanvas &&
+            monthlyLabels.length > 0
+        ) {
+
+
+            new Chart(
+
+                spendingCanvas,
+
+                {
+
+                    type: "line",
+
+
+                    data: {
+
+                        labels:
+                            monthlyLabels,
+
+
+                        datasets: [
+
+                            {
+
+                                label:
+                                    "Spending",
+
+
+                                data:
+                                    monthlyValues,
+
+
+                                borderWidth:
+                                    3,
+
+
+                                fill:
+                                    true,
+
+
+                                tension:
+                                    0.4,
+
+
+                                pointRadius:
+                                    3,
+
+
+                                pointHoverRadius:
+                                    6
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+
+                        maintainAspectRatio:
+                            false,
+
+
+                        interaction: {
+
+                            intersect:
+                                false,
+
+                            mode:
+                                "index"
+
+                        },
+
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    false
+
+                            },
+
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function(context) {
+
+                                            return " ₹" +
+                                                Number(
+                                                    context.parsed.y
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+
+                        scales: {
+
+                            y: {
+
+                                beginAtZero:
+                                    true,
+
+
+                                border: {
+
+                                    display:
+                                        false
+
+                                },
+
+
+                                grid: {
+
+                                    color:
+                                        "#eef0f4"
+
+                                },
+
+
+                                ticks: {
+
+                                    font: {
+
+                                        size:
+                                            10
+
+                                    },
+
+
+                                    callback:
+                                        function(value) {
+
+                                            return "₹" +
+                                                Number(
+                                                    value
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                );
+
+                                        }
+
+                                }
+
+                            },
+
+
+                            x: {
+
+                                border: {
+
+                                    display:
+                                        false
+
+                                },
+
+
+                                grid: {
+
+                                    display:
+                                        false
+
+                                },
+
+
+                                ticks: {
+
+                                    font: {
+
+                                        size:
+                                            10
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+        }
+
+
+        /* =====================================================
+           CATEGORY DONUT
+        ===================================================== */
+
+        const categoryCanvas =
+            document.getElementById(
+                "categoryChart"
+            );
+
+
+        if (
+            categoryCanvas &&
+            categoryLabels.length > 0
+        ) {
+
+
+            new Chart(
+
+                categoryCanvas,
+
+                {
+
+                    type:
+                        "doughnut",
+
+
+                    data: {
+
+                        labels:
+                            categoryLabels,
+
+
+                        datasets: [
+
+                            {
+
+                                data:
+                                    categoryValues,
+
+
+                                borderWidth:
+                                    3,
+
+
+                                borderColor:
+                                    "#ffffff",
+
+
+                                hoverOffset:
+                                    5
+
+                            }
+
+                        ]
+
+                    },
+
+
+                    options: {
+
+                        responsive:
+                            true,
+
+
+                        maintainAspectRatio:
+                            false,
+
+
+                        cutout:
+                            "72%",
+
+
+                        plugins: {
+
+                            legend: {
+
+                                display:
+                                    false
+
+                            },
+
+
+                            tooltip: {
+
+                                callbacks: {
+
+                                    label:
+                                        function(context) {
+
+                                            const value =
+                                                context.parsed;
+
+                                            return " ₹" +
+                                                Number(
+                                                    value
+                                                ).toLocaleString(
+                                                    "en-IN"
+                                                );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            );
+
+        }
+
+
+        /* =====================================================
+           CLOSE MOBILE MENU
+        ===================================================== */
+
+        document
+            .querySelectorAll(
+                ".sidebar a"
+            )
+            .forEach(
+
+                function(link) {
+
+                    link.addEventListener(
+
+                        "click",
+
+                        function() {
+
+                            if (
+                                window.innerWidth
+                                <= 1000
+                            ) {
+
+                                document
+                                    .getElementById(
+                                        "sidebar"
+                                    )
+                                    .classList
+                                    .remove(
+                                        "open"
+                                    );
+
+                            }
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+    </script>
+
 
 </body>
+
 </html>

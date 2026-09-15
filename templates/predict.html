@@ -1,70 +1,788 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Expense Prediction</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Prediction | SMART MONEY</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .page-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: #111827;
+            color: #ffffff;
+            padding: 28px 18px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        .brand {
+            padding: 5px 12px 30px;
+        }
+
+        .brand h2 {
+            margin: 0;
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .brand p {
+            margin: 7px 0 0;
+            font-size: 10px;
+            letter-spacing: 1.7px;
+            color: #94a3b8;
+        }
+
+        .nav-section {
+            margin-top: 18px;
+        }
+
+        .nav-title {
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            padding: 0 12px;
+            margin-bottom: 9px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            margin: 5px 0;
+            border-radius: 10px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: #1e293b;
+            color: #ffffff;
+        }
+
+        .nav-link.active {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.25);
+        }
+
+        /* ================= MAIN ================= */
+
+        .main-content {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 30px 38px 45px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+            font-size: 29px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .page-title p {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            box-shadow: 0 7px 18px rgba(37, 99, 235, 0.25);
+        }
+
+        /* ================= PREDICTION CARD ================= */
+
+        .prediction-card {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+        }
+
+        .card-header {
+            border-bottom: 1px solid #eef0f4;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 21px;
+            color: #111827;
+        }
+
+        .card-header p {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* ================= FORM ================= */
+
+        .prediction-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 46px;
+            padding: 0 13px;
+            border: 1px solid #d9dee7;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        /* ================= BUTTON ================= */
+
+        .form-actions {
+            grid-column: 1 / -1;
+            margin-top: 7px;
+        }
+
+        .predict-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.22);
+            transition: 0.2s ease;
+        }
+
+        .predict-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        /* ================= RESULT ================= */
+
+        .prediction-result {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 14px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .prediction-result h2 {
+            margin: 0;
+            color: #1e3a8a;
+            font-size: 18px;
+        }
+
+        .prediction-amount {
+            margin: 10px 0 0;
+            color: #2563eb;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .prediction-result p {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        /* ================= INFO CARDS ================= */
+
+        .info-grid {
+            max-width: 900px;
+            margin: 20px auto 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .info-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            margin-bottom: 13px;
+        }
+
+        .info-card h3 {
+            margin: 0 0 7px;
+            color: #172033;
+            font-size: 15px;
+        }
+
+        .info-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* ================= BACK BUTTON ================= */
+
+        .back-area {
+            max-width: 900px;
+            margin: 18px auto 0;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            padding: 0 20px;
+            border-radius: 9px;
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #cbd5e1;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 220px;
+            }
+
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 25px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .page-wrapper {
+                display: block;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .prediction-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                grid-column: auto;
+            }
+
+            .prediction-card {
+                padding: 22px;
+            }
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <div class="container">
+<div class="page-wrapper">
 
-        <h1>Expense Prediction</h1>
 
-        <form method="POST">
+    <!-- ================= SIDEBAR ================= -->
 
-            <label>Day:</label>
-            <input type="number" name="day" min="1" max="31" required>
+    <aside class="sidebar">
 
-            <br><br>
+        <div class="brand">
 
-            <label>Month:</label>
-            <input type="number" name="month" min="1" max="12" required>
+            <h2>SMART MONEY</h2>
 
-            <br><br>
+            <p>FINANCIAL INTELLIGENCE</p>
 
-            <label>Day of Week:</label>
-            <input type="number" name="day_of_week" min="0" max="6" required>
+        </div>
 
-            <br><br>
 
-            <label>Category:</label>
+        <div class="nav-section">
 
-<select name="category_code" required>
+            <div class="nav-title">
+                Main Menu
+            </div>
 
-    <option value="">Select Category</option>
-    <option value="0">Bills</option>
-    <option value="1">Entertainment</option>
-    <option value="2">Food</option>
-    <option value="3">Health</option>
-    <option value="4">Shopping</option>
-    <option value="5">Travel</option>
 
-</select>
+            <a href="{{ url_for('home') }}"
+               class="nav-link">
 
-            <br><br>
+                🏠 Dashboard
 
-            <button type="submit">Predict Expense</button>
+            </a>
 
-        </form>
 
-        {% if prediction is not none %}
+            <a href="{{ url_for('add_expense') }}"
+               class="nav-link">
 
-            <h2>Predicted Expense</h2>
+                ➕ Add Expense
 
-            <p>₹ {{ "%.2f"|format(prediction) }}</p>
+            </a>
 
-        {% endif %}
 
-        <br>
+            <a href="{{ url_for('predict') }}"
+               class="nav-link active">
 
-        <a href="/">
-            <button type="button">Back to Dashboard</button>
-        </a>
+                🤖 AI Prediction
 
-    </div>
+            </a>
+
+
+            <a href="{{ url_for('budget') }}"
+               class="nav-link">
+
+                📊 Budget Planner
+
+            </a>
+
+
+            <a href="{{ url_for('history') }}"
+               class="nav-link">
+
+                📋 Transactions
+
+            </a>
+
+        </div>
+
+
+        <div class="nav-section">
+
+            <div class="nav-title">
+                Account
+            </div>
+
+
+            <a href="#"
+               class="nav-link">
+
+                👤 Profile
+
+            </a>
+
+
+            <a href="#"
+               class="nav-link">
+
+                ⚙️ Settings
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}"
+               class="nav-link">
+
+                🚪 Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+
+        <!-- Header -->
+
+        <header class="top-header">
+
+            <div class="page-title">
+
+                <h1>AI Expense Prediction</h1>
+
+                <p>
+                    Use your expense information to estimate future spending.
+                </p>
+
+            </div>
+
+
+            <div class="user-avatar">
+                🤖
+            </div>
+
+        </header>
+
+
+        <!-- ================= PREDICTION FORM ================= -->
+
+        <section class="prediction-card">
+
+
+            <div class="card-header">
+
+                <h2>Prediction Details</h2>
+
+                <p>
+                    Enter the required information to generate an expense prediction.
+                </p>
+
+            </div>
+
+
+            <form method="POST"
+                  class="prediction-form">
+
+
+                <!-- Day -->
+
+                <div class="form-group">
+
+                    <label for="day">
+                        📅 Day
+                    </label>
+
+                    <input
+                        type="number"
+                        id="day"
+                        name="day"
+                        min="1"
+                        max="31"
+                        placeholder="Enter day"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Month -->
+
+                <div class="form-group">
+
+                    <label for="month">
+                        🗓️ Month
+                    </label>
+
+                    <input
+                        type="number"
+                        id="month"
+                        name="month"
+                        min="1"
+                        max="12"
+                        placeholder="Enter month"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Day of Week -->
+
+                <div class="form-group">
+
+                    <label for="day_of_week">
+                        📆 Day of Week
+                    </label>
+
+                    <input
+                        type="number"
+                        id="day_of_week"
+                        name="day_of_week"
+                        min="0"
+                        max="6"
+                        placeholder="0 - 6"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Category -->
+
+                <div class="form-group">
+
+                    <label for="category_code">
+                        🏷️ Category
+                    </label>
+
+                    <select
+                        id="category_code"
+                        name="category_code"
+                        required
+                    >
+
+                        <option value="">
+                            Select Category
+                        </option>
+
+                        <option value="0">
+                            Bills
+                        </option>
+
+                        <option value="1">
+                            Entertainment
+                        </option>
+
+                        <option value="2">
+                            Food
+                        </option>
+
+                        <option value="3">
+                            Health
+                        </option>
+
+                        <option value="4">
+                            Shopping
+                        </option>
+
+                        <option value="5">
+                            Travel
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Submit -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="predict-btn"
+                    >
+                        🤖 Predict Expense
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+            <!-- ================= PREDICTION RESULT ================= -->
+
+            {% if prediction is not none %}
+
+            <div class="prediction-result">
+
+                <div class="result-icon">
+                    💰
+                </div>
+
+                <h2>
+                    Predicted Expense
+                </h2>
+
+                <div class="prediction-amount">
+                    ₹ {{ "%.2f"|format(prediction) }}
+                </div>
+
+                <p>
+                    Estimated expense based on the information provided.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+        </section>
+
+
+        <!-- ================= INFO CARDS ================= -->
+
+        <div class="info-grid">
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    AI Powered
+                </h3>
+
+                <p>
+                    The prediction is generated using your
+                    existing expense prediction model.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    📈
+                </div>
+
+                <h3>
+                    Spending Forecast
+                </h3>
+
+                <p>
+                    Estimate the expected amount for a
+                    selected date and expense category.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-icon">
+                    💡
+                </div>
+
+                <h3>
+                    Smart Planning
+                </h3>
+
+                <p>
+                    Use the prediction to make better
+                    spending and budgeting decisions.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Back -->
+
+        <div class="back-area">
+
+            <a href="{{ url_for('home') }}"
+               class="back-button">
+
+                ← Back to Dashboard
+
+            </a>
+
+        </div>
+
+
+    </main>
+
+</div>
 
 </body>
 </html>

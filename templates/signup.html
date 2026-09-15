@@ -1,189 +1,771 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <title>Create Account | SMART MONEY</title>
 
-    <title>Create Account | Smart Money</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #080b20, #17113d, #241052);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
 
+        .signup-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 650px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        /* ================= LEFT SIDE ================= */
+
+        .left-section {
+            position: relative;
+            padding: 55px;
+            background: linear-gradient(145deg, #111735, #251453);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .left-section::before {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            border-radius: 50%;
+            background: rgba(124, 92, 255, 0.18);
+            top: -120px;
+            right: -100px;
+        }
+
+        .left-section::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(76, 201, 240, 0.08);
+            bottom: -100px;
+            left: -80px;
+        }
+
+        /* BRAND */
+
+        .brand {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .brand-name span {
+            color: #9d8cff;
+        }
+
+        /* HERO */
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 44px;
+            line-height: 1.15;
+            margin-bottom: 22px;
+            font-weight: 800;
+        }
+
+        .hero-content h1 span {
+            color: #a78bfa;
+        }
+
+        .hero-content p {
+            color: #b9bdd3;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 430px;
+        }
+
+        /* FEATURES */
+
+        .feature-box {
+            position: relative;
+            z-index: 2;
+            margin-top: 35px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .feature {
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+        }
+
+        .feature-icon {
+            font-size: 23px;
+            margin-bottom: 8px;
+        }
+
+        .feature strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .feature small {
+            color: #aeb2c8;
+            line-height: 1.4;
+        }
+
+        .copyright {
+            position: relative;
+            z-index: 2;
+            color: #777d9d;
+            font-size: 12px;
+        }
+
+        /* ================= RIGHT SIDE ================= */
+
+        .right-section {
+            background: #ffffff;
+            color: #171a2b;
+            padding: 45px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .signup-header {
+            margin-bottom: 25px;
+        }
+
+        .signup-header h2 {
+            font-size: 34px;
+            margin-bottom: 8px;
+            color: #171a2b;
+        }
+
+        .signup-header p {
+            color: #777b8d;
+            font-size: 15px;
+        }
+
+        /* FLASH MESSAGE */
+
+        .flash-message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+
+        .flash-error {
+            background: #fff0f0;
+            color: #c62828;
+            border: 1px solid #ffd4d4;
+        }
+
+        .flash-success {
+            background: #edfff5;
+            color: #16834b;
+            border: 1px solid #c8f1dc;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 650;
+            color: #303448;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            color: #8a8fa3;
+            pointer-events: none;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 50px;
+            border: 1px solid #dedfea;
+            border-radius: 12px;
+            padding: 0 15px 0 45px;
+            font-size: 15px;
+            outline: none;
+            color: #202337;
+            background: #fafaff;
+            transition: 0.2s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #7657f6;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(118, 87, 246, 0.10);
+        }
+
+        .form-group input::placeholder {
+            color: #a1a5b5;
+        }
+
+        /* PASSWORD */
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 50px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            color: #7d8296;
+        }
+
+        .toggle-password:hover {
+            color: #6048d8;
+        }
+
+        /* BUTTON */
+
+        .signup-button {
+            width: 100%;
+            height: 54px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #7657f6, #5c45d6);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+            box-shadow: 0 12px 25px rgba(102, 78, 225, 0.25);
+        }
+
+        .signup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(102, 78, 225, 0.32);
+        }
+
+        /* LOGIN LINK */
+
+        .login-text {
+            text-align: center;
+            margin-top: 20px;
+            color: #777b8d;
+            font-size: 14px;
+        }
+
+        .login-text a {
+            color: #654cdb;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .login-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* SECURITY */
+
+        .security-note {
+            margin-top: 20px;
+            padding: 12px 15px;
+            background: #f6f5ff;
+            border: 1px solid #e8e3ff;
+            border-radius: 11px;
+            color: #66617d;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 850px) {
+
+            .signup-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 520px;
+            }
+
+            .left-section {
+                min-height: 350px;
+                padding: 40px;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .feature-box {
+                display: none;
+            }
+
+            .copyright {
+                margin-top: 30px;
+            }
+
+            .right-section {
+                padding: 45px 40px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .signup-wrapper {
+                border-radius: 20px;
+            }
+
+            .left-section {
+                padding: 30px;
+                min-height: 300px;
+            }
+
+            .hero-content h1 {
+                font-size: 30px;
+            }
+
+            .hero-content p {
+                font-size: 14px;
+            }
+
+            .right-section {
+                padding: 35px 25px;
+            }
+
+            .signup-header h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
 
+<body>
 
-<body class="auth-page">
+<div class="signup-wrapper">
+
+    <!-- ================= LEFT SECTION ================= -->
+
+    <div class="left-section">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                ₹
+            </div>
+
+            <div class="brand-name">
+                SMART <span>MONEY</span>
+            </div>
+
+        </div>
 
 
-<div class="auth-container">
+        <div class="hero-content">
 
-    <!-- LOGO -->
+            <h1>
+                Build better<br>
+                <span>money habits.</span>
+            </h1>
 
-    <div class="auth-logo">
-        💰
+            <p>
+                Create your SMART MONEY account and start
+                tracking expenses, planning budgets and
+                understanding your financial habits.
+            </p>
+
+
+            <div class="feature-box">
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        📊
+                    </div>
+
+                    <strong>
+                        Expense Tracking
+                    </strong>
+
+                    <small>
+                        Track your daily expenses easily.
+                    </small>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🤖
+                    </div>
+
+                    <strong>
+                        AI Prediction
+                    </strong>
+
+                    <small>
+                        Predict future spending patterns.
+                    </small>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        💰
+                    </div>
+
+                    <strong>
+                        Smart Budget
+                    </strong>
+
+                    <small>
+                        Plan your monthly spending.
+                    </small>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🔒
+                    </div>
+
+                    <strong>
+                        Secure Login
+                    </strong>
+
+                    <small>
+                        Your account uses password hashing.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+            © 2026 SMART MONEY · Smart Expense Prediction & Budget Planner
+        </div>
+
     </div>
 
 
-    <!-- TITLE -->
+    <!-- ================= RIGHT SECTION ================= -->
 
-    <h1>
-        Smart Money
-    </h1>
+    <div class="right-section">
 
-    <p class="auth-subtitle">
-        Expense Prediction & Budget Planner
-    </p>
+        <div class="signup-header">
+
+            <h2>
+                Create account ✨
+            </h2>
+
+            <p>
+                Start managing your money smarter today.
+            </p>
+
+        </div>
 
 
-    <!-- SIGNUP TITLE -->
+        <!-- ================= FLASH MESSAGES ================= -->
 
-    <h2>
-        📝 Create Account
-    </h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash-message
+                        {% if category == 'success' %}
+                            flash-success
+                        {% else %}
+                            flash-error
+                        {% endif %}
+                    ">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
 
 
-    <!-- FLASH MESSAGES -->
+        <!-- ================= SIGNUP FORM ================= -->
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
+        <form method="POST" action="{{ url_for('signup') }}">
 
-        {% if messages %}
 
-            {% for category, message in messages %}
+            <!-- USERNAME -->
 
-                <div class="flash-message {{ category }}">
-                    {{ message }}
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        👤
+                    </span>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose a username"
+                        autocomplete="username"
+                        required
+                    >
+
                 </div>
 
-            {% endfor %}
-
-        {% endif %}
-
-    {% endwith %}
+            </div>
 
 
-    <!-- SIGNUP FORM -->
+            <!-- EMAIL -->
 
-    <form method="POST"
-          action="{{ url_for('signup') }}">
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">
+                        ✉️
+                    </span>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
 
 
-        <!-- USERNAME -->
+            <!-- PASSWORD -->
 
-        <div class="form-group">
+            <div class="form-group">
 
-            <label for="username">
-                Username
-            </label>
+                <label for="password">
+                    Password
+                </label>
 
-            <input
-                type="text"
-                id="username"
-                name="username"
-                placeholder="Choose a username"
-                autocomplete="username"
-                required
+                <div class="input-wrapper password-wrapper">
+
+                    <span class="input-icon">
+                        🔒
+                    </span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword('password', this)"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <div class="input-wrapper password-wrapper">
+
+                    <span class="input-icon">
+                        🔐
+                    </span>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword('confirm_password', this)"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CREATE ACCOUNT BUTTON -->
+
+            <button
+                type="submit"
+                class="signup-button"
             >
+                Create SMART MONEY Account
+            </button>
+
+        </form>
+
+
+        <!-- LOGIN -->
+
+        <div class="login-text">
+
+            Already have an account?
+
+            <a href="{{ url_for('login') }}">
+                Login here
+            </a>
 
         </div>
 
 
-        <!-- EMAIL -->
+        <!-- SECURITY -->
 
-        <div class="form-group">
+        <div class="security-note">
 
-            <label for="email">
-                Email
-            </label>
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                autocomplete="email"
-                required
-            >
+            🔒 Your password is securely hashed before being stored.
 
         </div>
 
-
-        <!-- PASSWORD -->
-
-        <div class="form-group">
-
-            <label for="password">
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Minimum 6 characters"
-                minlength="6"
-                autocomplete="new-password"
-                required
-            >
-
-        </div>
-
-
-        <!-- CONFIRM PASSWORD -->
-
-        <div class="form-group">
-
-            <label for="confirm_password">
-                Confirm Password
-            </label>
-
-            <input
-                type="password"
-                id="confirm_password"
-                name="confirm_password"
-                placeholder="Enter password again"
-                minlength="6"
-                autocomplete="new-password"
-                required
-            >
-
-        </div>
-
-
-        <!-- CREATE ACCOUNT BUTTON -->
-
-        <button type="submit"
-                class="auth-button">
-
-            🚀 Create Account
-
-        </button>
-
-
-    </form>
-
-
-    <!-- LOGIN LINK -->
-
-    <p class="auth-switch">
-
-        Already have an account?
-
-        <a href="{{ url_for('login') }}">
-            Login
-        </a>
-
-    </p>
-
+    </div>
 
 </div>
 
 
-</body>
+<!-- ================= JAVASCRIPT ================= -->
 
+<script>
+
+function togglePassword(inputId, button) {
+
+    const input = document.getElementById(inputId);
+
+    if (input.type === "password") {
+
+        input.type = "text";
+        button.textContent = "🙈";
+
+    } else {
+
+        input.type = "password";
+        button.textContent = "👁";
+
+    }
+
+}
+
+</script>
+
+</body>
 </html>
-```

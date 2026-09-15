@@ -1,95 +1,739 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login | Smart Money</title>
+    <title>Login | SMART MONEY</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #080b20, #17113d, #241052);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 620px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        /* LEFT SIDE */
+
+        .left-section {
+            position: relative;
+            padding: 55px;
+            background: linear-gradient(145deg, #111735, #251453);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .left-section::before {
+            content: "";
+            position: absolute;
+            width: 330px;
+            height: 330px;
+            border-radius: 50%;
+            background: rgba(124, 92, 255, 0.18);
+            top: -120px;
+            right: -100px;
+        }
+
+        .left-section::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(76, 201, 240, 0.08);
+            bottom: -100px;
+            left: -80px;
+        }
+
+        .brand {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .brand-name span {
+            color: #9d8cff;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 46px;
+            line-height: 1.15;
+            margin-bottom: 22px;
+            font-weight: 800;
+        }
+
+        .hero-content h1 span {
+            color: #a78bfa;
+        }
+
+        .hero-content p {
+            color: #b9bdd3;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 430px;
+        }
+
+        .feature-box {
+            position: relative;
+            z-index: 2;
+            margin-top: 35px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .feature {
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+        }
+
+        .feature-icon {
+            font-size: 23px;
+            margin-bottom: 8px;
+        }
+
+        .feature strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .feature small {
+            color: #aeb2c8;
+            line-height: 1.4;
+        }
+
+        .copyright {
+            position: relative;
+            z-index: 2;
+            color: #777d9d;
+            font-size: 12px;
+        }
+
+        /* RIGHT SIDE */
+
+        .right-section {
+            background: #ffffff;
+            color: #171a2b;
+            padding: 55px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            margin-bottom: 32px;
+        }
+
+        .login-header h2 {
+            font-size: 34px;
+            margin-bottom: 10px;
+            color: #171a2b;
+        }
+
+        .login-header p {
+            color: #777b8d;
+            font-size: 15px;
+        }
+
+        /* FLASH MESSAGES */
+
+        .flash-message {
+            padding: 13px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .flash-error {
+            background: #fff0f0;
+            color: #c62828;
+            border: 1px solid #ffd4d4;
+        }
+
+        .flash-success {
+            background: #edfff5;
+            color: #16834b;
+            border: 1px solid #c8f1dc;
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 650;
+            color: #303448;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            color: #8a8fa3;
+            pointer-events: none;
+        }
+
+        .form-group input {
+            width: 100%;
+            height: 52px;
+            border: 1px solid #dedfea;
+            border-radius: 12px;
+            padding: 0 15px 0 45px;
+            font-size: 15px;
+            outline: none;
+            color: #202337;
+            background: #fafaff;
+            transition: 0.2s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #7657f6;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(118, 87, 246, 0.10);
+        }
+
+        .form-group input::placeholder {
+            color: #a1a5b5;
+        }
+
+        /* PASSWORD */
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 50px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            color: #7d8296;
+        }
+
+        .toggle-password:hover {
+            color: #6048d8;
+        }
+
+        /* OPTIONS */
+
+        .login-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 5px 0 25px;
+            font-size: 13px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #777b8d;
+        }
+
+        .remember input {
+            width: 15px;
+            height: 15px;
+            accent-color: #6951e8;
+        }
+
+        /* BUTTON */
+
+        .login-button {
+            width: 100%;
+            height: 54px;
+            border: none;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #7657f6, #5c45d6);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+            box-shadow: 0 12px 25px rgba(102, 78, 225, 0.25);
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(102, 78, 225, 0.32);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        /* SIGNUP */
+
+        .signup-text {
+            text-align: center;
+            margin-top: 25px;
+            color: #777b8d;
+            font-size: 14px;
+        }
+
+        .signup-text a {
+            color: #654cdb;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .signup-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* SECURITY */
+
+        .security-note {
+            margin-top: 28px;
+            padding: 13px 15px;
+            background: #f6f5ff;
+            border: 1px solid #e8e3ff;
+            border-radius: 11px;
+            color: #66617d;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 850px) {
+
+            .login-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 520px;
+            }
+
+            .left-section {
+                min-height: 350px;
+                padding: 40px;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .feature-box {
+                display: none;
+            }
+
+            .copyright {
+                margin-top: 30px;
+            }
+
+            .right-section {
+                padding: 45px 40px;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .login-wrapper {
+                border-radius: 20px;
+            }
+
+            .left-section {
+                padding: 30px;
+                min-height: 300px;
+            }
+
+            .hero-content h1 {
+                font-size: 30px;
+            }
+
+            .hero-content p {
+                font-size: 14px;
+            }
+
+            .right-section {
+                padding: 35px 25px;
+            }
+
+            .login-header h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
 
-<body class="auth-page">
+<body>
 
-<div class="auth-container">
+<div class="login-wrapper">
 
-    <div class="auth-logo">
-        💰
-    </div>
+    <!-- ================= LEFT SECTION ================= -->
 
-    <h1>Smart Money</h1>
+    <div class="left-section">
 
-    <p class="auth-subtitle">
-        Expense Prediction & Budget Planner
-    </p>
+        <div class="brand">
+            <div class="brand-icon">₹</div>
 
-    <h2>🔐 Login</h2>
+            <div class="brand-name">
+                SMART <span>MONEY</span>
+            </div>
+        </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
 
-        {% if messages %}
+        <div class="hero-content">
 
-            {% for category, message in messages %}
+            <h1>
+                Take control of<br>
+                your <span>money.</span>
+            </h1>
 
-                <div class="flash-message {{ category }}">
-                    {{ message }}
+            <p>
+                Track your expenses, plan your budget,
+                understand your spending habits and make
+                smarter financial decisions with SMART MONEY.
+            </p>
+
+
+            <div class="feature-box">
+
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+
+                    <strong>Expense Tracking</strong>
+
+                    <small>
+                        Monitor where your money goes.
+                    </small>
                 </div>
 
-            {% endfor %}
 
-        {% endif %}
+                <div class="feature">
+                    <div class="feature-icon">🤖</div>
 
-    {% endwith %}
+                    <strong>AI Prediction</strong>
+
+                    <small>
+                        Get intelligent expense insights.
+                    </small>
+                </div>
 
 
-    <form method="POST">
+                <div class="feature">
+                    <div class="feature-icon">💰</div>
 
-        <div class="form-group">
+                    <strong>Budget Planning</strong>
 
-            <label>Username</label>
+                    <small>
+                        Plan your spending efficiently.
+                    </small>
+                </div>
 
-            <input
-                type="text"
-                name="username"
-                placeholder="Enter username"
-                required
-            >
+
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+
+                    <strong>Secure Account</strong>
+
+                    <small>
+                        Your account is protected.
+                    </small>
+                </div>
+
+            </div>
 
         </div>
 
 
-        <div class="form-group">
+        <div class="copyright">
+            © 2026 SMART MONEY · Smart Expense Prediction & Budget Planner
+        </div>
 
-            <label>Password</label>
+    </div>
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                required
-            >
+
+    <!-- ================= RIGHT SECTION ================= -->
+
+    <div class="right-section">
+
+        <div class="login-header">
+
+            <h2>Welcome back 👋</h2>
+
+            <p>
+                Login to continue to your financial dashboard.
+            </p>
 
         </div>
 
 
-        <button type="submit" class="auth-button">
-            🔑 Login
-        </button>
+        <!-- ================= FLASH MESSAGES ================= -->
 
-    </form>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash-message
+                        {% if category == 'success' %}
+                            flash-success
+                        {% else %}
+                            flash-error
+                        {% endif %}
+                    ">
+
+                        {{ message }}
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
 
 
-    <p class="auth-switch">
-        Don't have an account?
+        <!-- ================= LOGIN FORM ================= -->
 
-        <a href="{{ url_for('signup') }}">
-            Create Account
-        </a>
-    </p>
+        <form method="POST" action="{{ url_for('login') }}">
+
+
+            <!-- USERNAME -->
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">👤</span>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-icon">✉️</span>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="input-wrapper password-wrapper">
+
+                    <span class="input-icon">🔒</span>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword()"
+                        aria-label="Show password"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- OPTIONS -->
+
+            <div class="login-options">
+
+                <label class="remember">
+
+                    <input
+                        type="checkbox"
+                        name="remember"
+                    >
+
+                    Remember me
+
+                </label>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+                type="submit"
+                class="login-button"
+            >
+                Login to SMART MONEY
+            </button>
+
+        </form>
+
+
+        <!-- SIGNUP -->
+
+        <div class="signup-text">
+
+            Don't have an account?
+
+            <a href="{{ url_for('signup') }}">
+                Create account
+            </a>
+
+        </div>
+
+
+        <!-- SECURITY -->
+
+        <div class="security-note">
+
+            🔒 Your account is protected with secure password hashing.
+
+        </div>
+
+    </div>
 
 </div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+function togglePassword() {
+
+    const passwordInput = document.getElementById("password");
+    const button = document.querySelector(".toggle-password");
+
+    if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+        button.textContent = "🙈";
+
+    } else {
+
+        passwordInput.type = "password";
+        button.textContent = "👁";
+
+    }
+
+}
+
+</script>
 
 </body>
 </html>

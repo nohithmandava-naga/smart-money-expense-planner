@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Savings Goal - SMART MONEY</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #111827;
+        }
+
+        /* =========================
+           LAYOUT
+        ========================== */
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================== */
+
+        .sidebar {
+            width: 250px;
+            background: #111827;
+            color: white;
+            padding: 24px 16px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .brand {
+            padding: 4px 12px 28px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+            color: #94a3b8;
+            font-size: 11px;
+            letter-spacing: 1.2px;
+        }
+
+        .nav-title {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 0 12px;
+            margin: 12px 0 8px;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            display: block;
+            text-decoration: none;
+            color: #cbd5e1;
+            padding: 12px 14px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .nav-link.active {
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================== */
+
+        .main-content {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 28px 32px;
+        }
+
+        /* =========================
+           TOP BAR
+        ========================== */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .topbar p {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .dashboard-btn {
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .dashboard-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           PAGE HEADER
+        ========================== */
+
+        .page-header {
+            margin-bottom: 22px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .page-header p {
+            margin: 7px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* =========================
+           SAVINGS CARD
+        ========================== */
+
+        .savings-card {
+            max-width: 850px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .goal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .card-heading h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .card-heading p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* =========================
+           FORM
+        ========================== */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+            background: white;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        /* =========================
+           BUTTONS
+        ========================== */
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .save-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .cancel-btn {
+            text-decoration: none;
+            background: #e2e8f0;
+            color: #334155;
+            padding: 12px 22px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .cancel-btn:hover {
+            background: #cbd5e1;
+        }
+
+        /* =========================
+           INFO CARDS
+        ========================== */
+
+        .info-grid {
+            max-width: 850px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .info-card span {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .info-card strong {
+            font-size: 17px;
+            color: #111827;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main-content {
+                margin-left: 210px;
+                width: calc(100% - 210px);
+                padding: 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .app-layout {
+                display: block;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 16px;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .save-btn,
+            .cancel-btn {
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <h1>SMART MONEY</h1>
+            <p>FINANCIAL INTELLIGENCE</p>
+        </div>
+
+        <div class="nav-title">Main Menu</div>
+
+        <a href="{{ url_for('home') }}" class="nav-link">
+            🏠 Dashboard
+        </a>
+
+        <a href="{{ url_for('add_expense') }}" class="nav-link">
+            ➕ Add Expense
+        </a>
+
+        <a href="{{ url_for('predict') }}" class="nav-link">
+            🤖 AI Prediction
+        </a>
+
+        <a href="{{ url_for('budget') }}" class="nav-link">
+            📊 Budget Planner
+        </a>
+
+        <a href="{{ url_for('history') }}" class="nav-link">
+            📋 Transactions
+        </a>
+
+        <div class="nav-title">Account</div>
+
+        <a href="#" class="nav-link">
+            👤 Profile
+        </a>
+
+        <a href="#" class="nav-link">
+            ⚙️ Settings
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="nav-link">
+            🚪 Logout
+        </a>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <div class="topbar">
+
+            <div>
+                <h2>Savings Goal</h2>
+                <p>Plan your savings and track your financial goals.</p>
+            </div>
+
+            <a href="{{ url_for('home') }}" class="dashboard-btn">
+                ← Dashboard
+            </a>
+
+        </div>
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+            <h1>Create Your Savings Goal</h1>
+
+            <p>
+                Set a target, track your saved amount, and stay focused on your goal.
+            </p>
+
+        </div>
+
+
+        <!-- SAVINGS FORM -->
+
+        <div class="savings-card">
+
+            <div class="card-heading">
+
+                <div class="goal-icon">
+                    🎯
+                </div>
+
+                <div>
+                    <h2>Savings Goal Details</h2>
+                    <p>Enter the details of your financial goal.</p>
+                </div>
+
+            </div>
+
+
+            <form method="POST" action="{{ url_for('savings_goal') }}">
+
+                <div class="form-grid">
+
+                    <!-- GOAL NAME -->
+
+                    <div class="form-group full-width">
+
+                        <label for="goal_name">
+                            Goal Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="goal_name"
+                            name="goal_name"
+                            value="{{ goal_name }}"
+                            placeholder="Example: New Laptop"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TARGET -->
+
+                    <div class="form-group">
+
+                        <label for="goal_target">
+                            Target Amount (₹)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="goal_target"
+                            name="goal_target"
+                            step="0.01"
+                            min="0"
+                            value="{{ goal_target }}"
+                            placeholder="50000"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- SAVED -->
+
+                    <div class="form-group">
+
+                        <label for="goal_saved">
+                            Saved Amount (₹)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="goal_saved"
+                            name="goal_saved"
+                            step="0.01"
+                            min="0"
+                            value="{{ goal_saved }}"
+                            placeholder="10000"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DEADLINE -->
+
+                    <div class="form-group">
+
+                        <label for="goal_deadline">
+                            Deadline
+                        </label>
+
+                        <input
+                            type="date"
+                            id="goal_deadline"
+                            name="goal_deadline"
+                            value="{{ goal_deadline }}"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="actions">
+
+                    <button type="submit" class="save-btn">
+                        💾 Save Goal
+                    </button>
+
+                    <a
+                        href="{{ url_for('home') }}"
+                        class="cancel-btn"
+                    >
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- INFO CARDS -->
+
+        <div class="info-grid">
+
+            <div class="info-card">
+                <span>Target Amount</span>
+                <strong>
+                    ₹{{ "{:,.2f}".format(goal_target|float) }}
+                </strong>
+            </div>
+
+            <div class="info-card">
+                <span>Already Saved</span>
+                <strong>
+                    ₹{{ "{:,.2f}".format(goal_saved|float) }}
+                </strong>
+            </div>
+
+            <div class="info-card">
+                <span>Remaining</span>
+                <strong>
+                    ₹{{ "{:,.2f}".format(
+                        (goal_target|float - goal_saved|float)
+                        if (goal_target|float - goal_saved|float) > 0
+                        else 0
+                    ) }}
+                </strong>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
